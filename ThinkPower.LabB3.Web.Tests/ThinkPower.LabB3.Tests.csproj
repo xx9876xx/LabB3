@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAO\QuestionnaireDAOTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
   </ItemGroup>
@@ -99,6 +100,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ThinkPower.LabB3.DataAccess\ThinkPower.LabB3.DataAccess.csproj">
+      <Project>{76A49E62-E869-4A1F-BFBB-BAAE9E96A79D}</Project>
+      <Name>ThinkPower.LabB3.DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ThinkPower.LabB3.Web\ThinkPower.LabB3.Web.csproj">
       <Project>{779627BB-BDAC-46BF-960A-3C19F5DF3978}</Project>
       <Name>ThinkPower.LabB3.Web</Name>

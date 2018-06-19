@@ -227,6 +227,16 @@
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ThinkPower.LabB3.DataAccess\ThinkPower.LabB3.DataAccess.csproj">
+      <Project>{76a49e62-e869-4a1f-bfbb-baae9e96a79d}</Project>
+      <Name>ThinkPower.LabB3.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ThinkPower.LabB3.Domain\ThinkPower.LabB3.Domain.csproj">
+      <Project>{41e8e310-0536-4c18-82bc-7bf85048e703}</Project>
+      <Name>ThinkPower.LabB3.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
