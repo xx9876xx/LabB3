@@ -48,12 +48,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\Questionnaire.cs" />
+    <Compile Include="DTO\QuestionnaireAnswer.cs" />
+    <Compile Include="DTO\QuestionnaireResult.cs" />
+    <Compile Include="DTO\RiskEvaAnswer.cs" />
+    <Compile Include="DTO\RiskEvaluation.cs" />
+    <Compile Include="DTO\RiskEvaQuestionnaire.cs" />
+    <Compile Include="DTO\RiskEvaResult.cs" />
+    <Compile Include="DTO\riskRankKind.cs" />
+    <Compile Include="Entity\BaseEntity.cs" />
+    <Compile Include="Entity\Question\AnswerDefineEntity.cs" />
+    <Compile Include="Entity\Question\AnswerDetailEntity.cs" />
+    <Compile Include="Entity\Question\QuestDefineEntity.cs" />
+    <Compile Include="Entity\Question\QuestionnaireAnswerEntity.cs" />
+    <Compile Include="Entity\Question\QuestionnaireEntity.cs" />
+    <Compile Include="Entity\Question\QuestionnaireResultEntity.cs" />
+    <Compile Include="Entity\Risk\RiskEvaAnswerEntity.cs" />
+    <Compile Include="Entity\Risk\RiskEvaluationEntity.cs" />
+    <Compile Include="Entity\Risk\RiskEvaQuestionnaireEntity.cs" />
+    <Compile Include="Entity\Risk\RiskEvaResultEntity.cs" />
+    <Compile Include="Entity\Risk\RiskRankEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\QuestionnaireService.cs" />
+    <Compile Include="Service\RiskEvaluationService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DTO\" />
-    <Folder Include="Entity\Question\" />
-    <Folder Include="Entity\Risk\" />
     <Folder Include="Resources\" />
     <Folder Include="Service\interface\" />
   </ItemGroup>
@@ -65,6 +84,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ThinkPower.LabB3.DataAccess\ThinkPower.LabB3.DataAccess.csproj">
+      <Project>{76a49e62-e869-4a1f-bfbb-baae9e96a79d}</Project>
+      <Name>ThinkPower.LabB3.DataAccess</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

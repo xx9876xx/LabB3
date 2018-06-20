@@ -4,17 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ThinkPower.LabB3.DataAccess.DO
+namespace ThinkPower.LabB3.Domain.Entity.Question
 {
     /// <summary>
-    /// 問卷答題主檔DO
+    /// 問卷答題主檔Entity類別
     /// </summary>
-    class QuestionnaireAnswerDO
+    class QuestionnaireAnswerEntity : BaseEntity
     {
-        /// <summary>
-        /// 紀錄識別碼
-        /// </summary>
-        public Guid Uid { get; set; }
         /// <summary>
         /// 問卷識別碼
         /// </summary>
@@ -39,21 +35,5 @@ namespace ThinkPower.LabB3.DataAccess.DO
         /// 問卷填寫來源代號
         /// </summary>
         public string TesteeSource { get; set; }
-        /// <summary>
-        /// 建立人員代號
-        /// </summary>
-        public string CreateUserId { get; set; }
-        /// <summary>
-        /// 建立時間
-        /// </summary>
-        public DateTime? CreateTime { get; set; }
-        /// <summary>
-        /// 修改人員代號
-        /// </summary>
-        public string ModifyUserId { get; set; }
-        /// <summary>
-        /// 修改時間
-        /// </summary>
-        public DateTime? ModifyTime { get; set; }
     }
 }

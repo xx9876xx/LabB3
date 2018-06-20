@@ -19,30 +19,32 @@ namespace ThinkPower.LabB3.DataAccess.DAO
         /// <summary>
         /// SQL資料庫連線物件(private)
         /// </summary>
-        private SqlConnection _DbConnection;
+        private SqlConnection _dbConnection;
         /// <summary>
         /// SQL資料庫連線物件
         /// </summary>
-        protected SqlConnection DbConnection
+        public SqlConnection DbConnection
         {
             get
             {
                 try
                 {
-                    _DbConnection.Open();
-                    _DbConnection.Close();
-                    _DbConnection.Dispose();
-                    return _DbConnection;
+                    //TODO getConnection  GetConnection開過之後要丟給DbConnection 開的工作交給別人
+                    _dbConnection.Open();
+                    _dbConnection.Close();
+                    //_dbConnection.Dispose();
+                    return _dbConnection;
                 }
                 catch(Exception ex)
                 {
                     logger.Info("非有效連線由GetConnection()取得回傳" + ex);
+                    //TODO 放這會檢查不到GetConnection()的Excpetion 導致Excpetion迴圈
                     return GetConnection();
                 }
             }
             set
             {
-                _DbConnection = value;
+                _dbConnection = value;
             }
         }     
         /// <summary>
@@ -54,7 +56,7 @@ namespace ThinkPower.LabB3.DataAccess.DAO
         /// 呼叫DbHelper取得資料庫連線物件
         /// </summary>
         /// <returns></returns>
-        public SqlConnection GetConnection()
+        protected SqlConnection GetConnection()
         {
             string connKey = "LabB3"; 
             return DbHelper.GetConnection(connKey);

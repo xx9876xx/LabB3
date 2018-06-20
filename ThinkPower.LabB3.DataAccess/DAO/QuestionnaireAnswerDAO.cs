@@ -21,15 +21,28 @@ namespace ThinkPower.LabB3.DataAccess.DAO
         {
             try
             {
-                DataTable dt = new DataTable();
-                using (SqlConnection cn = base.DbConnection)
+                int count = 0;
+                using (SqlConnection cn = DbConnection)
                 {
-                    DataSet ds = new DataSet();
-                    SqlDataAdapter dataAdapter = new SqlDataAdapter
-                        ("SELECT * FROM [LabB3].[dbo].[QuestionnaireAnswer]", cn);
-                    dataAdapter.Fill(ds, "QuestionnaireAnswer");
-                    dt = ds.Tables["QuestionnaireAnswer"];
-                    return dt.Rows.Count;
+                    SqlCommand sqlcmd = new SqlCommand("SELECT COUNT(Uid) FROM LabB3.dbo.QuestionnaireAnswer", cn);
+                    cn.Open();
+                    SqlDataReader reader = sqlcmd.ExecuteReader();
+                    while ((reader.Read()))
+                    {
+                        if (!reader[0].Equals(DBNull.Value))
+                        {
+                            if (Int32.TryParse(reader[0].ToString(), out count))
+                            {
+                            }
+                            else
+                            {
+                                logger.Error("執行Count方法時，無法轉換讀取資料為數字！");
+                                throw new InvalidCastException("執行Count方法時，無法轉換讀取資料為數字！");
+                            }
+                        }
+                    }
+                    cn.Close();
+                    return count;
                 }
             }
             catch (Exception ex)

@@ -28,25 +28,26 @@ namespace ThinkPower.LabB3.DataAccess.Helper
             if (String.IsNullOrEmpty(connKey))
             {
                 throw new ArgumentNullException("connKey參數不存在");
-            }                
+            }
+            
             try
             {
-                string connString;
+                //string connString;
                 
                 if (HttpRuntime.AppDomainAppId != null)
                 {
                     //is web app
-                    connString = WebConfigurationManager.ConnectionStrings[connKey].ConnectionString;
+                    //connString = WebConfigurationManager.ConnectionStrings[connKey].ConnectionString;
                 }
                 else
                 {
-                    //is windows app
-                    Configuration config = WebConfigurationManager.OpenWebConfiguration(System.AppDomain.CurrentDomain.BaseDirectory+ "\\Web.config");
-                    connString = config.ConnectionStrings.ConnectionStrings[connKey].ToString();
+                   // not web app
+                   // Configuration config = ConfigurationManager.OpenMappedExeConfiguration(System.AppDomain.CurrentDomain.BaseDirectory+ "\\Web.config");
+                   // connString = config.ConnectionStrings.ConnectionStrings[connKey].ToString();
                 }
                 //WebContext webContext = (WebContext)config.EvaluationContext.HostingContext;
                 //TODO 要連到Web專案的Web.config，先讓DLL知道自己在哪才能連Manager
-                //string connString = @"Server=(LocalDB)\MSSQLLocalDB;Initial Catalog=LabB3;User ID=labap;Password=q1w1e1r1t1;;Persist Security Info=False";
+                string connString = @"Server=(LocalDB)\MSSQLLocalDB;Initial Catalog=LabB3;User ID=labap;Password=q1w1e1r1t1;;Persist Security Info=False";
                 //string connString = WebConfigurationManager.ConnectionStrings[connKey].ConnectionString;
                 //string connString = ConfigurationManager.ConnectionStrings[connKey].ToString().Trim();
                 SqlConnection conn = new SqlConnection(connString);

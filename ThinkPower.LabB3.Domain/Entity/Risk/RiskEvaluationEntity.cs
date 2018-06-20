@@ -4,17 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ThinkPower.LabB3.DataAccess.DO
+namespace ThinkPower.LabB3.Domain.Entity.Risk
 {
     /// <summary>
-    /// 投資風險評估結果DO
+    /// 投資風險評估結果Entity類別
     /// </summary>
-    class RiskEvaluationDO
+    class RiskEvaluationEntity : BaseEntity
     {
-        /// <summary>
-        /// 紀錄識別碼
-        /// </summary>
-        public Guid Uid { get; set; }
         /// <summary>
         /// 風險評估項目代號
         /// </summary>
@@ -51,21 +47,5 @@ namespace ThinkPower.LabB3.DataAccess.DO
         /// 後台是否採用
         /// </summary>
         public string IsUsed { get; set; }
-        /// <summary>
-        /// 建立人員代號
-        /// </summary>
-        public string CreateUserId { get; set; }
-        /// <summary>
-        /// 建立時間
-        /// </summary>
-        public DateTime? CreateTime { get; set; }
-        /// <summary>
-        /// 修改人員代號
-        /// </summary>
-        public string ModifyUserId { get; set; }
-        /// <summary>
-        /// 修改時間
-        /// </summary>
-        public DateTime? ModifyTime { get; set; }
     }
 }

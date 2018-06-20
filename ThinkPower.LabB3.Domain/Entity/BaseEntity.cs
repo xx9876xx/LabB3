@@ -4,29 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ThinkPower.LabB3.DataAccess.DO
+namespace ThinkPower.LabB3.Domain.Entity
 {
-    /// <summary>
-    /// 投資風險標的等級明細DO
-    /// </summary>
-    class RiskRankDetailDO
+    class BaseEntity
     {
-        /// <summary>
-        /// 紀錄識別碼
-        /// </summary>
         public Guid Uid { get; set; }
-        /// <summary>
-        /// 紀錄識別碼
-        /// </summary>
-        public Guid RiskRankUid { get; set; }
-        /// <summary>
-        /// 投資標的風險收益等級
-        /// </summary>
-        public string ProfitRiskRank { get; set; }
-        /// <summary>
-        /// 是否有效
-        /// </summary>
-        public string IsEffective { get; set; }
         /// <summary>
         /// 建立人員代號
         /// </summary>
