@@ -9,7 +9,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
     /// <summary>
     /// 投資風險評估填答明細Entity類別
     /// </summary>
-    class RiskEvaAnswerEntity : BaseEntity
+    public class RiskEvaAnswerEntity : BaseEntity
     {
     }
 }

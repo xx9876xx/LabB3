@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ThinkPower.LabB3.DataAccess.DO;
 
 namespace ThinkPower.LabB3.Domain.Entity.Question
 {
     /// <summary>
     /// 問卷Entity類別
     /// </summary>
-    class QuestionnaireEntity : BaseEntity
+    public class QuestionnaireEntity : BaseEntity
     {
         /// <summary>
         /// 問卷編號
@@ -63,5 +64,41 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// 問卷頁尾描敍內容
         /// </summary>
         public string FooterDescription { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dataObject"></param>
+        /// <returns></returns>
+        public bool MappingDO(QuestionnaireDO dataObject)
+        {
+            try
+            {
+                QuestId = dataObject.QuestId;
+                Version = dataObject.Version;
+                Kind = dataObject.Kind;
+                Name = dataObject.Name;
+                Memo = dataObject.Memo;
+                Ondate = dataObject.Ondate;
+                Offdate = dataObject.Offdate;
+                NeedScore = dataObject.NeedScore;
+                QuestScore = dataObject.QuestScore;
+                ScoreKind = dataObject.ScoreKind;
+                HeadBackgroundImg = dataObject.HeadBackgroundImg;
+                HeadDescription = dataObject.HeadDescription;
+                FooterDescription = dataObject.FooterDescription;
+                Uid = dataObject.Uid;
+                CreateUserId = dataObject.CreateUserId;
+                CreateTime = dataObject.CreateTime;
+                ModifyUserId = dataObject.ModifyUserId;
+                ModifyTime = dataObject.ModifyTime;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            
+        }
     }
 }

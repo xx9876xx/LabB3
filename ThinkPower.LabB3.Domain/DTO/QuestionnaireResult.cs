@@ -9,7 +9,7 @@ namespace ThinkPower.LabB3.Domain.DTO
     /// <summary>
     /// 問卷作答結果DTO
     /// </summary>
-    class QuestionnaireResult
+    public class QuestionnaireResult
     {
     }
 }

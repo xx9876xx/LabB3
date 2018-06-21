@@ -3,87 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ThinkPower.LabB3.Domain.Service;
+using ThinkPower.LabB3.Web.ActionModels;
+using ThinkPower.LabB3.Web.ViewModels;
+using ThinkPower.LabB3.Domain.DTO;
 
 namespace ThinkPower.LabB3.Web.Controllers
 {
     public class RiskEvaluationController : Controller
     {
-        // GET: RiskEvaluation
-        public ActionResult Index()
+        /// <summary>
+        /// 確認接受投資風險評估結果
+        /// </summary>
+        /// <param name="actionModel">投資風險評估資料</param>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult AcceptRiskRank(SaveRankActionModel actionModel)
         {
             return View();
         }
-
-        // GET: RiskEvaluation/Details/5
-        public ActionResult Details(int id)
+        /// <summary>
+        /// 執行評估投資風險等級
+        /// </summary>
+        /// <param name="answers">投資風險評估問卷填答資料</param>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult EvaluationRank(FormCollection answers)
         {
             return View();
         }
-
-        // GET: RiskEvaluation/Create
-        public ActionResult Create()
+        /// <summary>
+        /// 進行投資風險評估問卷填答
+        /// </summary>
+        /// <param name="actionMode">來源資料</param>
+        /// <returns>投資風險評估問卷畫面</returns>
+        [HttpGet]
+        public ActionResult EvaQuest(EvaluationRankActionModel actionMode)
         {
-            return View();
-        }
-
-        // POST: RiskEvaluation/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: RiskEvaluation/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: RiskEvaluation/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: RiskEvaluation/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: RiskEvaluation/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            RiskEvaluationService riskService = new RiskEvaluationService();
+            RiskEvaQuestionnaire riskEvaQuestionnaire = riskService.GetRiskQuestionnaire("FNDRE001");
+            QuestionnaireDisplayViewModel viewModel = new QuestionnaireDisplayViewModel(riskEvaQuestionnaire);
+            return View(viewModel);
         }
     }
 }

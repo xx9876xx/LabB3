@@ -9,7 +9,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
     /// <summary>
     /// 問卷填答評分結果Entity類別
     /// </summary>
-    class QuestionnaireResultEntity : BaseEntity
+    public class QuestionnaireResultEntity : BaseEntity
     {
         /// <summary>
         /// 問卷識別碼

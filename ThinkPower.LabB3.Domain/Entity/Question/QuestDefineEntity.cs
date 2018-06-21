@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ThinkPower.LabB3.DataAccess.DO;
 
 namespace ThinkPower.LabB3.Domain.Entity.Question
 {
     /// <summary>
     /// 問卷題目定義Entity類別
     /// </summary>
-    class QuestDefineEntity : BaseEntity
+    public class QuestDefineEntity : BaseEntity
     {
         /// <summary>
         /// 問卷識別碼
@@ -59,5 +60,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// 題目排序序號
         /// </summary>
         public int OrderSn { get; set; }
+
+        
     }
 }

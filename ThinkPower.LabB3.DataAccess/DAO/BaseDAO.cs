@@ -16,10 +16,7 @@ namespace ThinkPower.LabB3.DataAccess.DAO
     public abstract class BaseDAO
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        /// <summary>
-        /// SQL資料庫連線物件(private)
-        /// </summary>
-        private SqlConnection _dbConnection;
+        //private SqlConnection _dbConnection = DbHelper.GetConnection("LabB3");
         /// <summary>
         /// SQL資料庫連線物件
         /// </summary>
@@ -30,36 +27,51 @@ namespace ThinkPower.LabB3.DataAccess.DAO
                 try
                 {
                     //TODO getConnection  GetConnection開過之後要丟給DbConnection 開的工作交給別人
-                    _dbConnection.Open();
-                    _dbConnection.Close();
-                    //_dbConnection.Dispose();
-                    return _dbConnection;
+                    if (DbConnection == null)
+                    {
+                        return GetConnection();
+                    }
+                    else
+                        return DbConnection;
                 }
                 catch(Exception ex)
                 {
-                    logger.Info("非有效連線由GetConnection()取得回傳" + ex);
-                    //TODO 放這會檢查不到GetConnection()的Excpetion 導致Excpetion迴圈
-                    return GetConnection();
+                    throw new ApplicationException(ex.ToString());
                 }
             }
             set
             {
-                _dbConnection = value;
+                DbConnection = value;
             }
-        }     
+        }
         /// <summary>
-        /// 取得資料筆數
+        /// 取得資料筆數(抽象方法)
         /// </summary>
         /// <returns> 筆數 </returns>
         public abstract int Count();
         /// <summary>
         /// 呼叫DbHelper取得資料庫連線物件
         /// </summary>
-        /// <returns></returns>
+        /// <returns> SqlConnection物件 </returns>
         protected SqlConnection GetConnection()
         {
             string connKey = "LabB3"; 
             return DbHelper.GetConnection(connKey);
+        }
+        /// <summary>
+        /// 幫助資料庫取出的Object轉成可為Null的DateTime物件
+        /// </summary>
+        /// <param name="dataReaderObj">資料庫取出的Object</param>
+        /// <returns> DateTime?物件 </returns>
+        protected DateTime? ObjectToNullableDateTime(Object dataReaderObj)
+        {
+            if (dataReaderObj.Equals(DBNull.Value))
+                return null;
+            else
+            {
+                return (DateTime)dataReaderObj;
+            }
+                    
         }
     }
 }

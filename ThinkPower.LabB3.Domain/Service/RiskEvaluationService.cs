@@ -10,7 +10,7 @@ using NLog;
 
 namespace ThinkPower.LabB3.Domain.Service
 {
-    class RiskEvaluationService
+    public class RiskEvaluationService
     {
         /// <summary>
         /// 評估投資風險等級
@@ -26,11 +26,9 @@ namespace ThinkPower.LabB3.Domain.Service
         /// </summary>
         /// <param name="uid">紀錄識別碼</param>
         /// <returns></returns>
-        /// 
-        //TODO 不用bool
-        public Tuple<RiskEvaluation,bool> Get(string uid)
+        public RiskEvaluation Get(string uid)
         {
-            return Tuple.Create(new RiskEvaluation(),true);
+            return null;
         }
         /// <summary>
         /// 取得風險評估問卷資料
@@ -39,7 +37,10 @@ namespace ThinkPower.LabB3.Domain.Service
         /// <returns></returns>
         public RiskEvaQuestionnaire GetRiskQuestionnaire(string questId)
         {
-            return null;
+            QuestionnaireService questService = new QuestionnaireService();
+            Questionnaire questionnaire = questService.GetActiveQuestionnaire(questId);
+            RiskEvaQuestionnaire result = new RiskEvaQuestionnaire(questionnaire);
+            return result;
         }
         /// <summary>
         /// 取得暫存的風險評估資料

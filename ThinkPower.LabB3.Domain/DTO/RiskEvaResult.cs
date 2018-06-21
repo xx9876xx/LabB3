@@ -9,7 +9,7 @@ namespace ThinkPower.LabB3.Domain.DTO
     /// <summary>
     /// 投資風險等級結果DTO
     /// </summary>
-    class RiskEvaResult
+    public class RiskEvaResult
     {
     }
 }

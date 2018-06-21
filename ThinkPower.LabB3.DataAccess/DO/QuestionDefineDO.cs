@@ -9,7 +9,7 @@ namespace ThinkPower.LabB3.DataAccess.DO
     /// <summary>
     /// 問卷題目定義DO
     /// </summary>
-    class QuestionDefineDO
+    public class QuestionDefineDO
     {
         /// <summary>
         /// 紀錄識別碼

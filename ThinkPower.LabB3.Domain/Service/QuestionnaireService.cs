@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ThinkPower.LabB3.Domain;
-using ThinkPower.LabB3.DataAccess;
+using ThinkPower.LabB3.DataAccess.DAO;
+using ThinkPower.LabB3.DataAccess.DO;
 using ThinkPower.LabB3.Domain.DTO;
+using ThinkPower.LabB3.Domain.Entity.Question;
 using NLog;
 
 namespace ThinkPower.LabB3.Domain.Service
 {
-    class QuestionnaireService
+    public class QuestionnaireService
     {
         /// <summary>
         /// 計算問卷填答得分
@@ -28,7 +30,14 @@ namespace ThinkPower.LabB3.Domain.Service
         /// <returns></returns>
         public Questionnaire GetActiveQuestionnaire(string id)
         {
-            return null;
+            QuestionnaireDAO questionnaireDAO = new QuestionnaireDAO();
+            QuestionnaireDO questionnaireDO = questionnaireDAO.Read(id);
+            //DO傳給Entity
+            QuestionnaireEntity questionnaireEntity = new QuestionnaireEntity();
+            questionnaireEntity.MappingDO(questionnaireDO);
+            //Entity傳給DTO
+            Questionnaire questionnaire = new Questionnaire(questionnaireEntity);
+            return questionnaire;
         }
         /// <summary>
         /// 取得問卷資料

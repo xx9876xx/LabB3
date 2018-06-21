@@ -9,7 +9,7 @@ namespace ThinkPower.LabB3.Domain.DTO
     /// <summary>
     /// 風險評估資料DTO
     /// </summary>
-    class RiskEvaluation
+    public class RiskEvaluation
     {
     }
 }

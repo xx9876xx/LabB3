@@ -9,7 +9,7 @@ namespace ThinkPower.LabB3.DataAccess.DO
     /// <summary>
     /// 投資風險等級DO
     /// </summary>
-    class RiskRankDO
+    public class RiskRankDO
     {
         /// <summary>
         /// 紀錄識別碼

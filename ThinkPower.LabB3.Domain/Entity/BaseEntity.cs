@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ThinkPower.LabB3.Domain.Entity
 {
-    class BaseEntity
+    public class BaseEntity
     {
         public Guid Uid { get; set; }
         /// <summary>

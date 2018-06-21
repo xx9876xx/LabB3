@@ -9,7 +9,7 @@ namespace ThinkPower.LabB3.Domain.DTO
     /// <summary>
     /// 投資風險屬性DTO
     /// </summary>
-    class riskRankKind
+    public class riskRankKind
     {
     }
 }
