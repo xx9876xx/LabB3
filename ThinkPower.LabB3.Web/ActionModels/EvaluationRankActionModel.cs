@@ -7,30 +7,16 @@ namespace ThinkPower.LabB3.Web.ActionModels
 {
     public class EvaluationRankActionModel
     {
+        public EvaluationRankActionModel() { }
+        public EvaluationRankActionModel(string Version)
+        {
+            this.Version = Version;
+        }
         /// <summary>
-        /// 問卷主檔問卷名稱
+        /// 問卷版本
         /// </summary>
-        public string QuestionnaireName { get; set; }
-        /// <summary>
-        /// 頁首底圖網址圖片網址
-        /// </summary>
-        public string HeadBackgroundImg { get; set; }
-        /// <summary>
-        /// 頁首說明文字
-        /// </summary>
-        public string HeadDescription { get; set; }
-        /// <summary>
-        /// 問卷題目
-        /// </summary>
-        public List<string> Question { get; set; }
-        /// <summary>
-        /// 題目答案項目
-        /// </summary>
-        public dynamic Answer { get; set; }
-        /// <summary>
-        /// 頁尾說明文字
-        /// </summary>
-        public string FooterDescription { get; set; }
+        public string Version { get; set; }
+        
         
     }
 }

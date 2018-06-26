@@ -48,14 +48,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DTO\Questionnaire.cs" />
-    <Compile Include="DTO\QuestionnaireAnswer.cs" />
-    <Compile Include="DTO\QuestionnaireResult.cs" />
-    <Compile Include="DTO\RiskEvaAnswer.cs" />
-    <Compile Include="DTO\RiskEvaluation.cs" />
-    <Compile Include="DTO\RiskEvaQuestionnaire.cs" />
-    <Compile Include="DTO\RiskEvaResult.cs" />
-    <Compile Include="DTO\riskRankKind.cs" />
+    <Compile Include="DTO\QuestionnaireDTO.cs" />
+    <Compile Include="DTO\QuestionnaireAnswerDTO.cs" />
+    <Compile Include="DTO\QuestionnaireResultDTO.cs" />
+    <Compile Include="DTO\RiskEvaAnswerDTO.cs" />
+    <Compile Include="DTO\RiskEvaluationDTO.cs" />
+    <Compile Include="DTO\RiskEvaQuestionnaireDTO.cs" />
+    <Compile Include="DTO\RiskEvaResultDTO.cs" />
+    <Compile Include="DTO\riskRankKindDTO.cs" />
     <Compile Include="Entity\BaseEntity.cs" />
     <Compile Include="Entity\Question\AnswerDefineEntity.cs" />
     <Compile Include="Entity\Question\AnswerDetailEntity.cs" />

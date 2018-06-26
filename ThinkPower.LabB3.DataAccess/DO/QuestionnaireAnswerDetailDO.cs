@@ -34,7 +34,7 @@ namespace ThinkPower.LabB3.DataAccess.DO
         /// <summary>
         /// 答題計分分數
         /// </summary>
-        public int Score { get; set; }
+        public int? Score { get; set; }
         /// <summary>
         /// 建立人員代號
         /// </summary>

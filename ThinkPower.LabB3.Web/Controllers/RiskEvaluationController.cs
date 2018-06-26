@@ -7,6 +7,8 @@ using ThinkPower.LabB3.Domain.Service;
 using ThinkPower.LabB3.Web.ActionModels;
 using ThinkPower.LabB3.Web.ViewModels;
 using ThinkPower.LabB3.Domain.DTO;
+using ThinkPower.LabB3.Domain.Entity.Risk;
+using System.Runtime.ExceptionServices;
 
 namespace ThinkPower.LabB3.Web.Controllers
 {
@@ -27,7 +29,7 @@ namespace ThinkPower.LabB3.Web.Controllers
         /// </summary>
         /// <param name="answers">投資風險評估問卷填答資料</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         public ActionResult EvaluationRank(FormCollection answers)
         {
             return View();
@@ -40,10 +42,20 @@ namespace ThinkPower.LabB3.Web.Controllers
         [HttpGet]
         public ActionResult EvaQuest(EvaluationRankActionModel actionMode)
         {
-            RiskEvaluationService riskService = new RiskEvaluationService();
-            RiskEvaQuestionnaire riskEvaQuestionnaire = riskService.GetRiskQuestionnaire("FNDRE001");
-            QuestionnaireDisplayViewModel viewModel = new QuestionnaireDisplayViewModel(riskEvaQuestionnaire);
-            return View(viewModel);
+            try
+            {
+                RiskEvaluationService riskService = new RiskEvaluationService();
+                RiskEvaQuestionnaireEntity riskEvaQuestionnaireEntity = riskService.GetRiskQuestionnaire(actionMode.Version);
+                QuestionnaireDisplayViewModel viewModel = new QuestionnaireDisplayViewModel(riskEvaQuestionnaireEntity);
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                ExceptionDispatchInfo.Capture(ex).Throw();
+                return null;
+            }
+            
         }
+        //TODO Div display 
     }
 }

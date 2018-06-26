@@ -89,6 +89,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAO\QuestionAnswerDefineDAOTests.cs" />
+    <Compile Include="DAO\QuestionDefineDAOTests.cs" />
     <Compile Include="DAO\QuestionnaireDAOTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />

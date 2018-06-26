@@ -1,0 +1,10 @@
+﻿.navbar {
+    background-color: #1351ca;
+}
+    .navbar .navbar-brand {
+        color: #ffffff;
+        font-size:larger;
+    }
+.navbar-default .navbar-nav > li > a {
+    color: #ffffff;
+}

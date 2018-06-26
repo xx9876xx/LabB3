@@ -34,7 +34,7 @@ namespace ThinkPower.LabB3.DataAccess.DO
         /// <summary>
         /// 風險評估分數
         /// </summary>
-        public int RiskScore { get; set; }
+        public int? RiskScore { get; set; }
         /// <summary>
         /// 投資屬性
         /// </summary>

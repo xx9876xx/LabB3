@@ -16,62 +16,45 @@ namespace ThinkPower.LabB3.DataAccess.DAO
     public abstract class BaseDAO
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        //private SqlConnection _dbConnection = DbHelper.GetConnection("LabB3");
+
         /// <summary>
-        /// SQL資料庫連線物件
+        /// 私有的資料庫連線物件
+        /// </summary>
+        private SqlConnection _dbConnection;
+
+        /// <summary>
+        /// 資料庫連線物件
         /// </summary>
         public SqlConnection DbConnection
         {
             get
             {
-                try
+                if (_dbConnection == null)
                 {
-                    //TODO getConnection  GetConnection開過之後要丟給DbConnection 開的工作交給別人
-                    if (DbConnection == null)
-                    {
-                        return GetConnection();
-                    }
-                    else
-                        return DbConnection;
+                    _dbConnection = GetConnection();
                 }
-                catch(Exception ex)
-                {
-                    throw new ApplicationException(ex.ToString());
-                }
+                return _dbConnection;
             }
             set
             {
                 DbConnection = value;
             }
         }
-        /// <summary>
-        /// 取得資料筆數(抽象方法)
-        /// </summary>
-        /// <returns> 筆數 </returns>
-        public abstract int Count();
+        
         /// <summary>
         /// 呼叫DbHelper取得資料庫連線物件
         /// </summary>
         /// <returns> SqlConnection物件 </returns>
         protected SqlConnection GetConnection()
         {
-            string connKey = "LabB3"; 
+            string connKey = "LabB3";
             return DbHelper.GetConnection(connKey);
         }
+
         /// <summary>
-        /// 幫助資料庫取出的Object轉成可為Null的DateTime物件
+        /// 取得資料筆數(抽象方法)
         /// </summary>
-        /// <param name="dataReaderObj">資料庫取出的Object</param>
-        /// <returns> DateTime?物件 </returns>
-        protected DateTime? ObjectToNullableDateTime(Object dataReaderObj)
-        {
-            if (dataReaderObj.Equals(DBNull.Value))
-                return null;
-            else
-            {
-                return (DateTime)dataReaderObj;
-            }
-                    
-        }
+        /// <returns> 筆數 </returns>
+        public abstract int Count();
     }
 }

@@ -13,6 +13,20 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
     public class QuestDefineEntity : BaseEntity
     {
         /// <summary>
+        /// 將DO載入Entity建構式
+        /// </summary>
+        /// <param name="dataObject"> 題目選項DO物件 </param>
+        public QuestDefineEntity(QuestionDefineDO dataObject)
+        {
+            if (dataObject == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            generateEntity(dataObject);
+        }
+
+        /// <summary>
         /// 問卷識別碼
         /// </summary>
         public Guid QuestUid { get; set; }
@@ -39,11 +53,11 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// <summary>
         /// 複選最少答項數
         /// </summary>
-        public int MinMultipleAnswers { get; set; }
+        public int? MinMultipleAnswers { get; set; }
         /// <summary>
         /// 複選最多答項數
         /// </summary>
-        public int MaxMultipleAnswers { get; set; }
+        public int? MaxMultipleAnswers { get; set; }
         /// <summary>
         /// 複選限制單一做答條件
         /// </summary>
@@ -59,8 +73,33 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// <summary>
         /// 題目排序序號
         /// </summary>
-        public int OrderSn { get; set; }
+        public int? OrderSn { get; set; }
 
-        
+        /// <summary>
+        /// 將DO物件載入Entity物件
+        /// </summary>
+        /// <param name="dataObject">題目DO物件</param>
+        /// <returns>載入成功/失敗</returns>
+        private void generateEntity(QuestionDefineDO dataObject)
+        {
+            Uid = dataObject.Uid;
+            CreateUserId = dataObject.CreateUserId;
+            CreateTime = dataObject.CreateTime;
+            ModifyUserId = dataObject.ModifyUserId;
+            ModifyTime = dataObject.ModifyTime;
+
+            QuestUid = dataObject.QuestUid;
+            QuestionId = dataObject.QuestionId;
+            QuestionContent = dataObject.QuestionContent;
+            NeedAnswer = dataObject.NeedAnswer;
+            AllowNaCondition = dataObject.AllowNaCondition;
+            AnswerType = dataObject.AnswerType;
+            MinMultipleAnswers = dataObject.MinMultipleAnswers;
+            MaxMultipleAnswers = dataObject.MaxMultipleAnswers;
+            SingleAnswerCondition = dataObject.SingleAnswerCondition;
+            CountScoreType = dataObject.CountScoreType;
+            Memo = dataObject.Memo;
+            OrderSn = dataObject.OrderSn;
+        }
     }
 }

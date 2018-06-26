@@ -8,6 +8,9 @@ namespace ThinkPower.LabB3.Domain.Entity
 {
     public class BaseEntity
     {
+        /// <summary>
+        /// 識別碼
+        /// </summary>
         public Guid Uid { get; set; }
         /// <summary>
         /// 建立人員代號

@@ -42,11 +42,11 @@ namespace ThinkPower.LabB3.DataAccess.DO
         /// <summary>
         /// 計分分數
         /// </summary>
-        public int Score { get; set; }
+        public int? Score { get; set; }
         /// <summary>
         /// 答案項目排序序號
         /// </summary>
-        public int OrderSn { get; set; }
+        public int? OrderSn { get; set; }
         /// <summary>
         /// 建立人員代號
         /// </summary>

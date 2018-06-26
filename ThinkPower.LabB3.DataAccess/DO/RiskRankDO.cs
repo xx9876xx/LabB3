@@ -22,11 +22,11 @@ namespace ThinkPower.LabB3.DataAccess.DO
         /// <summary>
         /// 起始分數
         /// </summary>
-        public int MinScore { get; set; }
+        public int? MinScore { get; set; }
         /// <summary>
         /// 截止分數
         /// </summary>
-        public int MaxScore { get; set; }
+        public int? MaxScore { get; set; }
         /// <summary>
         /// 投資屬性類型
         /// </summary>

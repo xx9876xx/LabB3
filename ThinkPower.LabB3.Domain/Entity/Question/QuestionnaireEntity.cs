@@ -13,6 +13,20 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
     public class QuestionnaireEntity : BaseEntity
     {
         /// <summary>
+        /// 將DO載入Entity建構式
+        /// </summary>
+        /// <param name="dataObject"> 問卷主檔DO物件 </param>
+        public QuestionnaireEntity(QuestionnaireDO dataObject)
+        {
+            if (dataObject == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            GenerateEntity(dataObject);
+
+        }
+        /// <summary>
         /// 問卷編號
         /// </summary>
         public string QuestId { get; set; }
@@ -65,40 +79,41 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// </summary>
         public string FooterDescription { get; set; }
         /// <summary>
-        /// 
+        /// 題目集合
         /// </summary>
-        /// <param name="dataObject"></param>
-        /// <returns></returns>
-        public bool MappingDO(QuestionnaireDO dataObject)
-        {
-            try
-            {
-                QuestId = dataObject.QuestId;
-                Version = dataObject.Version;
-                Kind = dataObject.Kind;
-                Name = dataObject.Name;
-                Memo = dataObject.Memo;
-                Ondate = dataObject.Ondate;
-                Offdate = dataObject.Offdate;
-                NeedScore = dataObject.NeedScore;
-                QuestScore = dataObject.QuestScore;
-                ScoreKind = dataObject.ScoreKind;
-                HeadBackgroundImg = dataObject.HeadBackgroundImg;
-                HeadDescription = dataObject.HeadDescription;
-                FooterDescription = dataObject.FooterDescription;
-                Uid = dataObject.Uid;
-                CreateUserId = dataObject.CreateUserId;
-                CreateTime = dataObject.CreateTime;
-                ModifyUserId = dataObject.ModifyUserId;
-                ModifyTime = dataObject.ModifyTime;
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+        public IEnumerable<QuestDefineEntity> QuestDefEnumer { get; set; }
+        //TODO 問題清單裡面的問題Entity要加入選項清單屬性 命名要改一下複數加s
+        /// <summary>
+        /// 題目及選項字典集合
+        /// </summary>
+        public Dictionary<string, IEnumerable<AnswerDefineEntity>> QuestAnswerPairs { get; set; }
 
-            
+        /// <summary>
+        /// 將DO物件載入Entity物件
+        /// </summary>
+        /// <param name="dataObject">問卷主檔DO物件</param>
+        /// <returns>載入成功/失敗</returns>
+        private void GenerateEntity(QuestionnaireDO dataObject)
+        {
+            Uid = dataObject.Uid;
+            CreateUserId = dataObject.CreateUserId;
+            CreateTime = dataObject.CreateTime;
+            ModifyUserId = dataObject.ModifyUserId;
+            ModifyTime = dataObject.ModifyTime;
+
+            QuestId = dataObject.QuestId;
+            Version = dataObject.Version;
+            Kind = dataObject.Kind;
+            Name = dataObject.Name;
+            Memo = dataObject.Memo;
+            Ondate = dataObject.Ondate;
+            Offdate = dataObject.Offdate;
+            NeedScore = dataObject.NeedScore;
+            QuestScore = dataObject.QuestScore;
+            ScoreKind = dataObject.ScoreKind;
+            HeadBackgroundImg = dataObject.HeadBackgroundImg;
+            HeadDescription = dataObject.HeadDescription;
+            FooterDescription = dataObject.FooterDescription;
         }
     }
 }

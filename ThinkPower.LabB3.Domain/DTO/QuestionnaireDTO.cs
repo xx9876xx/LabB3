@@ -11,7 +11,7 @@ namespace ThinkPower.LabB3.Domain.DTO
     /// <summary>
     /// 有效問卷資料DTO
     /// </summary>
-    public class Questionnaire
+    public class QuestionnaireDTO
     {
         /// <summary>
         /// 問卷編號
@@ -61,11 +61,16 @@ namespace ThinkPower.LabB3.Domain.DTO
         /// 問卷頁尾描敍內容
         /// </summary>
         public string FooterDescription { get; set; }
+        /// <summary>
+        /// 題目及選項字典集合
+        /// </summary>
+        public Dictionary<QuestDefineEntity, IEnumerable<AnswerDefineEntity>> QuestAnswerPairs { get; set; }
 
-        public Questionnaire()
+        public QuestionnaireDTO()
         {
         }
-        public Questionnaire(QuestionnaireEntity questionnaireDO)
+        //TODO檢查參數
+        public QuestionnaireDTO(QuestionnaireEntity questionnaireDO)
         {
             QuestId = questionnaireDO.QuestId;
             Version = questionnaireDO.Version;

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using ThinkPower.LabB3.Domain;
 using ThinkPower.LabB3.DataAccess;
 using ThinkPower.LabB3.Domain.DTO;
+using ThinkPower.LabB3.Domain.Entity.Question;
 using NLog;
+using ThinkPower.LabB3.Domain.Entity.Risk;
 
 namespace ThinkPower.LabB3.Domain.Service
 {
@@ -17,7 +19,7 @@ namespace ThinkPower.LabB3.Domain.Service
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public RiskEvaResult EvaluateRiskRank(RiskEvaAnswer uid)
+        public RiskEvaResultDTO EvaluateRiskRank(RiskEvaAnswerDTO uid)
         {
             return null;
         }
@@ -26,7 +28,7 @@ namespace ThinkPower.LabB3.Domain.Service
         /// </summary>
         /// <param name="uid">紀錄識別碼</param>
         /// <returns></returns>
-        public RiskEvaluation Get(string uid)
+        public RiskEvaluationDTO Get(string uid)
         {
             return null;
         }
@@ -35,19 +37,20 @@ namespace ThinkPower.LabB3.Domain.Service
         /// </summary>
         /// <param name="questId">問卷編號</param>
         /// <returns></returns>
-        public RiskEvaQuestionnaire GetRiskQuestionnaire(string questId)
+        public RiskEvaQuestionnaireEntity GetRiskQuestionnaire(string questId)
         {
             QuestionnaireService questService = new QuestionnaireService();
-            Questionnaire questionnaire = questService.GetActiveQuestionnaire(questId);
-            RiskEvaQuestionnaire result = new RiskEvaQuestionnaire(questionnaire);
-            return result;
+            QuestionnaireEntity questionnaireEntity = questService.GetActiveQuestionnaire(questId);
+            RiskEvaQuestionnaireEntity riskEvaQuestionnairEntity = new RiskEvaQuestionnaireEntity(questionnaireEntity);
+            return riskEvaQuestionnairEntity;
         }
+        
         /// <summary>
         /// 取得暫存的風險評估資料
         /// </summary>
         /// <param name="key">暫存資料識別碼</param>
         /// <returns></returns>
-        public RiskEvaResult GetRiskResult(string key)
+        public RiskEvaResultDTO GetRiskResult(string key)
         {
             return null;
         }

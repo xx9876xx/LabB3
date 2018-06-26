@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace ThinkPower.LabB3.Domain.DTO
 {
     /// <summary>
-    /// 風險評估資料DTO
+    /// 問卷作答結果DTO
     /// </summary>
-    public class RiskEvaluation
+    public class QuestionnaireResultDTO
     {
     }
 }

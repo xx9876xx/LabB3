@@ -1,46 +1,56 @@
 ﻿@model ThinkPower.LabB3.Web.ViewModels.QuestionnaireDisplayViewModel
 <div class="container">
-    <div style="background-image:url(@Html.DisplayFor(model => Model.HeadBackgroundImg));width:auto;height:150px">
-        <br />
-        <br />
-        <h1>@Html.DisplayFor(model => model.QuestionnaireName)</h1>
-    </div>
-</div>
-<hr />
-<div class="container alert-info">
-    <div>
+        <div style="background-image:url(@Html.DisplayFor(model => Model.HeadBackgroundImg));width:100%;height:150px">
+            <h1 id="title">@Html.DisplayFor(model => model.QuestionnaireName)</h1>
+        </div>
+    <hr />
+    <div class="container alert-info">
         <div>
-            <p class="">@Html.DisplayFor(model => model.HeadDescription)</p>
+            <div>
+                <p class="">@Html.DisplayFor(model => model.HeadDescription)</p>
+            </div>
+            <div>
+                @using (Html.BeginForm("EvaluationRank", "RiskEvaluation", FormMethod.Post, htmlAttributes: new { id = "questForm" }))
+                {
+                    foreach (var x in Model.QuestDefEnumer)
+                    {
+                        <p> <span> @x.QuestionId &nbsp;</span> @x.QuestionContent </p>
+                        if (x.AnswerType == "F")
+                        {
+                            foreach (var y in Model.QuestionAnswer[x.QuestionId])
+                            {
+                                @Html.TextBox(x.QuestionId)
+                                <p> @y.AnswerContent </p>
+                            }
+                        }
+                        if (x.AnswerType == "S")
+                        {
+                            <p>
+                                @foreach (var y in Model.QuestionAnswer[x.QuestionId])
+                                {
+                                    @Html.RadioButton(x.QuestionId, y.AnswerCode)<span>&nbsp;&nbsp;@y.AnswerContent&nbsp;&nbsp;</span>
+                                }
+                            </p>
+                        }
+                        if (x.AnswerType == "M")
+                        {
+                            <p>
+                                @foreach (var y in Model.QuestionAnswer[x.QuestionId])
+                                {
+                                    @Html.CheckBox(y.AnswerCode)<span>&nbsp;&nbsp;@y.AnswerContent&nbsp;&nbsp;</span>
+                                }
+                            </p>
+                        }
+                    }
+                }
+                </div>
+            <div>
+                @Html.Raw(Model.FooterDescription)
+            </div>
+            <div class="text-center">
+                <input id="Button1" type="button" value="確定" class="btn-info" onclick="return SubmitClick()"/>
+            </div>
         </div>
     </div>
 </div>
-<ul>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-</ul>
+

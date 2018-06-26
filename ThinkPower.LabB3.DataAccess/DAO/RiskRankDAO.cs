@@ -10,7 +10,7 @@ using System.Runtime.ExceptionServices;
 
 namespace ThinkPower.LabB3.DataAccess.DAO
 {
-    class RiskRankDAO : BaseDAO
+    public class RiskRankDAO : BaseDAO
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         /// <summary>
@@ -24,26 +24,12 @@ namespace ThinkPower.LabB3.DataAccess.DAO
                 int count = 0;
                 using (SqlConnection cn = DbConnection)
                 {
-                    SqlCommand sqlcmd = new SqlCommand("SELECT COUNT(Uid) FROM LabB3.dbo.RiskRank", cn);
+                    SqlCommand cmd = new SqlCommand
+                        ("SELECT COUNT(Uid) FROM RiskEvaluation", cn);
                     cn.Open();
-                    SqlDataReader reader = sqlcmd.ExecuteReader();
-                    while ((reader.Read()))
-                    {
-                        if (!reader[0].Equals(DBNull.Value))
-                        {
-                            if (Int32.TryParse(reader[0].ToString(), out count))
-                            {
-                            }
-                            else
-                            {
-                                logger.Error("執行Count方法時，無法轉換讀取資料為數字！");
-                                throw new InvalidCastException("執行Count方法時，無法轉換讀取資料為數字！");
-                            }
-                        }
-                    }
-                    cn.Close();
-                    return count;
+                    count = (int)cmd.ExecuteScalar();
                 }
+                return count;
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using ThinkPower.LabB3.Web.ActionModels;
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -8,36 +9,51 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
-<body>
-    <div id="nav" class="navbar navbar-dark bg-success navbar-expand-lg navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                @Html.ActionLink("LabB3", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="">
-                <ul class="nav navbar-nav nav-color nav-right ">
-                    <li>@Html.ActionLink("首頁", "Index", "Home")</li>
-                    <li>@Html.ActionLink("關於", "About", "Home")</li>
-                    <li>@Html.ActionLink("登出", "Contact", "Home")</li>
-                </ul>
-            </div>
+<body class="container">
+    <div class="content">
+        <div class="container page-header header">
+            <nav class="navbar navbar-default navbar-fixed-top">
+                <div id="nav-brand" class="navbar-header">
+                    <h2>
+                        @Html.ActionLink("LabB3", "Index", "Home", new { @class = "navbar-brand" })
+                    </h2>
+                </div>
+                <div id="nav-menu" class="navbar-right">
+                    <ul class="nav navbar-nav navbar-text">
+                        <li>@Html.ActionLink("|", "", "")</li>
+                        <li>@Html.ActionLink("首頁", "Index", "Home")</li>
+                        <li>@Html.ActionLink("|", "", "")</li>
+                        <li>@Html.ActionLink("關於", "About", "Home")</li>
+                        <li>@Html.ActionLink("|", "", "")</li>
+                        <li>@Html.ActionLink("登出", "Contact", "Home")</li>
+                        <li>@Html.ActionLink("|", "", "")</li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div id="main" class="container body-content main">
+            @RenderBody()
+        </div>
+        <div class="left">
+            <ul >
+                <li>&nbsp;</li>
+                @{ 
+                    //TODO QueryString加問卷一或二
+                    EvaluationRankActionModel act1 = new EvaluationRankActionModel("FNDRE001");
+                    EvaluationRankActionModel act2 = new EvaluationRankActionModel("FNDRE002");
+                }
+                <li><a href="@Url.Action("EvaQuest", "RiskEvaluation", act1 )"><h4 class="glyphicon glyphicon-arrow-right">&nbsp;風險評估問卷(1)</h4></a></li>
+                <li>&nbsp;</li>
+                <li><a href="@Url.Action("EvaQuest", "RiskEvaluation", act2 )"><h4 class="glyphicon glyphicon-arrow-right">&nbsp;風險評估問卷(2)</h4></a></li>
+            </ul>
+        </div>
+        <div id="footer" class="footer">
+            <hr />
+            <footer>
+                <h5 class="text-center">LabB3 Inc. All Rights Reserved</h5>
+            </footer>
         </div>
     </div>
-    <div id="nav-left" class="col-md-3 hidden-sm hidden-xs" data-spy="affix" data-offset-top="0">
-        <br/>
-        <ul class="navbar-left">
-            <li><a href="#">風險評估問卷(1)</a></li><br />
-            <li><a href="#">風險評估問卷(2)</a></li>
-        </ul>
-    </div>
-    <div id="main" class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>LabB3 Inc. All Rights Reserved</p>
-        </footer>
-    </div>
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

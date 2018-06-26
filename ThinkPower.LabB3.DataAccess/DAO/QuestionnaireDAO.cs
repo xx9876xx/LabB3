@@ -27,30 +27,12 @@ namespace ThinkPower.LabB3.DataAccess.DAO
             try
             {
                 int count = 0;
-                using (SqlConnection cn = GetConnection())
+                using (SqlConnection cn = DbConnection)
                 {
                     SqlCommand cmd = new SqlCommand
-                        ("SELECT COUNT(Uid) As Count FROM LabB3.dbo.Questionnaire", cn);
+                        ("SELECT COUNT(Uid) FROM Questionnaire", cn);
                     cn.Open();
-                    using (SqlDataReader dr = cmd.ExecuteReader())
-                    {
-                        while ((dr.Read()))
-                        {
-                            if (!dr["Count"].Equals(DBNull.Value))
-                            {
-                                if (Int32.TryParse(dr[0].ToString(), out count))
-                                {
-                                }
-                                else
-                                {
-                                    logger.Error("執行Count方法時，無法轉換讀取資料為數字！");
-                                    throw new InvalidCastException("執行Count方法時，無法轉換讀取資料為數字！");
-                                }
-                            }
-                        }
-                        cmd.Cancel();
-                        dr.Close();
-                    }                    
+                    count = (int)cmd.ExecuteScalar();                    
                 }
                 return count;
             }
@@ -60,15 +42,19 @@ namespace ThinkPower.LabB3.DataAccess.DAO
                 ExceptionDispatchInfo.Capture(ex).Throw();
                 return 0;
             }
-
         }
+
         /// <summary>
-        /// 查詢問卷
+        /// 取得指定問卷編號的問卷資料
         /// </summary>
-        /// <param name="id">問卷Uid</param>
-        /// <returns> QuestionnaireDO物件 </returns>
-        public QuestionnaireDO Read(string QuestId)
+        /// <param name="questId">問卷編號</param>
+        /// <returns> 問卷主檔DO物件 </returns>
+        public QuestionnaireDO GetQuestionnaireData(string questId)
         {
+            if (questId == null)
+            {
+                throw new ArgumentNullException();
+            }
             try
             {
                 QuestionnaireDO questionnaireDO = new QuestionnaireDO();
@@ -78,94 +64,36 @@ namespace ThinkPower.LabB3.DataAccess.DAO
                         ("SELECT TOP 1 [Uid],[QuestId],[Version],[Kind],[Name],[Memo],[Ondate],[Offdate]," +
                         "[NeedScore],[QuestScore],[ScoreKind],[HeadBackgroundImg],[HeadDescription]," +
                         "[FooterDescription],[CreateUserId],[CreateTime],[ModifyUserId],[ModifyTime] " +
-                        "FROM[LabB3].[dbo].[Questionnaire] " +
-                        "WHERE [QuestId] = @quesrId " +
+                        "FROM Questionnaire " +
+                        "WHERE [QuestId] = @questId " +
                         "ORDER BY [Ondate] DESC", cn);
-                    cmd.Parameters.AddWithValue("@quesrId", QuestId);
+                    cmd.Parameters.AddWithValue("@questId", questId);
                     cn.Open();
-
+                    //TODO 如果取不到值該怎麼辦 要訂好檢核 要不到就回傳null;  集合的話吐空集合給他;
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
                         while (dr.Read())
-                        {
-                            questionnaireDO.Uid = dr.GetGuid(dr.GetOrdinal("Uid"));
-                            questionnaireDO.Version = dr["Version"].ToString();
-                            questionnaireDO.Kind = dr["Kind"].ToString();
-                            questionnaireDO.Name = dr["Name"].ToString();
-                            questionnaireDO.Memo = dr["Memo"].ToString();
-                            questionnaireDO.Ondate = ObjectToNullableDateTime(dr["Ondate"]);
-                            questionnaireDO.Offdate = ObjectToNullableDateTime(dr["Offdate"]);
-                            questionnaireDO.NeedScore = dr["NeedScore"].ToString();
-                            questionnaireDO.ScoreKind = dr["ScoreKind"].ToString();
-                            questionnaireDO.HeadBackgroundImg = dr["HeadBackgroundImg"].ToString();
-                            questionnaireDO.HeadDescription = dr["HeadDescription"].ToString();
-                            questionnaireDO.FooterDescription = dr["FooterDescription"].ToString();
-                            questionnaireDO.CreateUserId = dr["CreateUserId"].ToString();
-                            questionnaireDO.CreateTime = ObjectToNullableDateTime(dr["CreateTime"]);
-                            questionnaireDO.ModifyUserId = dr["ModifyUserId"].ToString();
-                            questionnaireDO.ModifyTime = ObjectToNullableDateTime(dr["ModifyTime"]);                            
+                        {                            
+                            questionnaireDO.Uid = Guid.Parse(Convert.ToString(dr["Uid"]));
+                            questionnaireDO.Version = Convert.ToString(dr["Version"]);
+                            questionnaireDO.Kind = Convert.ToString(dr["Kind"]);
+                            questionnaireDO.Name = Convert.ToString(dr["Name"]);
+                            questionnaireDO.Memo = Convert.ToString(dr["Memo"]);
+                            questionnaireDO.Ondate = Convert.IsDBNull(dr["Ondate"]) ? (DateTime?)null : Convert.ToDateTime(dr["Ondate"]);
+                            questionnaireDO.Offdate = Convert.IsDBNull(dr["Offdate"]) ? (DateTime?)null : Convert.ToDateTime(dr["Offdate"]);
+                            questionnaireDO.NeedScore = Convert.ToString(dr["NeedScore"]);
+                            questionnaireDO.ScoreKind = Convert.ToString(dr["ScoreKind"]);
+                            questionnaireDO.HeadBackgroundImg = Convert.ToString(dr["HeadBackgroundImg"]);
+                            questionnaireDO.HeadDescription = Convert.ToString(dr["HeadDescription"]);
+                            questionnaireDO.FooterDescription = Convert.ToString(dr["FooterDescription"]);
+                            questionnaireDO.CreateUserId = Convert.ToString(dr["CreateUserId"]);
+                            questionnaireDO.CreateTime = Convert.IsDBNull(dr["CreateTime"]) ? (DateTime?)null : Convert.ToDateTime(dr["CreateTime"]);
+                            questionnaireDO.ModifyUserId = Convert.ToString(dr["ModifyUserId"]);
+                            questionnaireDO.ModifyTime = Convert.IsDBNull(dr["ModifyTime"]) ? (DateTime?)null : Convert.ToDateTime(dr["ModifyTime"]);
                         }
-                        cmd.Cancel();
-                        dr.Close();
                     }
                 }
                 return questionnaireDO;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                ExceptionDispatchInfo.Capture(ex).Throw();
-                return null;
-            }
-        }
-
-
-        /// <summary>
-        /// 查詢問卷
-        /// </summary>
-        /// <returns></returns>
-        public List<QuestionnaireDO> ReadAll()
-        {
-            try
-            {
-                List<QuestionnaireDO> listDO = new List<QuestionnaireDO>();
-                using (SqlConnection cn = GetConnection())
-                {
-                    SqlCommand cmd = new SqlCommand
-                        ("SELECT [Uid],[QuestId],[Version],[Kind],[Name],[Memo],[Ondate],[Offdate]," +
-                        "[NeedScore],[QuestScore],[ScoreKind],[HeadBackgroundImg],[HeadDescription]," +
-                        "[FooterDescription],[CreateUserId],[CreateTime],[ModifyUserId],[ModifyTime] " +
-                        "FROM[LabB3].[dbo].[Questionnaire]", cn);
-                    cn.Open();
-
-                    using (SqlDataReader dr = cmd.ExecuteReader())
-                    {
-                        while (dr.Read())
-                        {
-                            QuestionnaireDO questionnaireDO = new QuestionnaireDO();
-                            questionnaireDO.Uid = dr.GetGuid(dr.GetOrdinal("Uid"));
-                            questionnaireDO.Version = dr["Version"].ToString();
-                            questionnaireDO.Kind = dr["Kind"].ToString();
-                            questionnaireDO.Name = dr["Name"].ToString();
-                            questionnaireDO.Memo = dr["Memo"].ToString();
-                            questionnaireDO.Ondate = ObjectToNullableDateTime(dr["Ondate"]);
-                            questionnaireDO.Offdate = ObjectToNullableDateTime(dr["Offdate"]);
-                            questionnaireDO.NeedScore = dr["NeedScore"].ToString();
-                            questionnaireDO.ScoreKind = dr["ScoreKind"].ToString();
-                            questionnaireDO.HeadBackgroundImg = dr["HeadBackgroundImg"].ToString();
-                            questionnaireDO.HeadDescription = dr["HeadDescription"].ToString();
-                            questionnaireDO.FooterDescription = dr["FooterDescription"].ToString();
-                            questionnaireDO.CreateUserId = dr["CreateUserId"].ToString();
-                            questionnaireDO.CreateTime = ObjectToNullableDateTime(dr["CreateTime"]);
-                            questionnaireDO.ModifyUserId = dr["ModifyUserId"].ToString();
-                            questionnaireDO.ModifyTime = ObjectToNullableDateTime(dr["ModifyTime"]);
-                            listDO.Add(questionnaireDO);
-                        }
-                        cmd.Cancel();
-                        dr.Close();
-                    }
-                }
-                return listDO;
             }
             catch (Exception ex)
             {

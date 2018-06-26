@@ -30,11 +30,11 @@ namespace ThinkPower.LabB3.DataAccess.DO
         /// <summary>
         /// 問卷總分
         /// </summary>
-        public int QuestScore { get; set; }
+        public int? QuestScore { get; set; }
         /// <summary>
         /// 問卷得分
         /// </summary>
-        public int ActualScore { get; set; }
+        public int? ActualScore { get; set; }
         /// <summary>
         /// 問卷填寫來源代號
         /// </summary>

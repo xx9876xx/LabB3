@@ -1,11 +1,15 @@
 ﻿$(document).ready(function () {
 
-    $('#nav-left').on('affix.bs.affix', function () {
-        $(this).width($(this).width() - 1);
-        $('#main').addClass('col-md-offset-2');
 
-    }).on('affix-top.bs.affix', function () {
-        $(this).width($(this).width() - 1);
-        $('#main').addClass('col-md-offset-2');
-    });
+    
 });
+
+
+//確認鈕事件
+function SubmitClick() {
+    let url = '/RiskEvaluation/EvaluationRank';    //新網址
+    $("#questForm").attr('method', "post");    //設定
+    $("#questForm").attr('action', url);
+    $("#questForm").submit();    //轉址
+    return true;
+}

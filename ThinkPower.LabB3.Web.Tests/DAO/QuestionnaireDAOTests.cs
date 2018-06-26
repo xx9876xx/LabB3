@@ -26,16 +26,16 @@ namespace ThinkPower.LabB3.DataAccess.DAO.Tests
         }
 
         [TestMethod()]
-        public void ReadAllTest()
+        public void GetDataTest()
         {
             //arrange
             QuestionnaireDAO target = new QuestionnaireDAO();
             Guid expected = Guid.Parse("91800195-25B9-40A5-AA66-0C66F9363A79");
             //act
-            List<QuestionnaireDO> actual;
-            actual = target.ReadAll();
+            QuestionnaireDO actual;
+            actual = target.GetQuestionnaireData("FNDRE002");
             //assert
-            Assert.AreEqual(expected, actual[0].Uid);
+            Assert.AreEqual(expected, actual.Uid);
         }
     }
 }
