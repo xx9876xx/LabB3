@@ -20,7 +20,7 @@ namespace ThinkPower.LabB3.DataAccess.DAO.Tests
             string expected = "請輸入您的手機號碼(格式為0912345678，將作為活動通知使用)";
             //act
             IEnumerable<QuestionDefineDO> actual;
-            actual = target.GetQuestionEnumer("91800195-25B9-40A5-AA66-0C66F9363A79");
+            actual = target.GetQuestions("91800195-25B9-40A5-AA66-0C66F9363A79");
             //assert
             Assert.AreEqual(expected, actual.ElementAt(0).QuestionContent);
         }

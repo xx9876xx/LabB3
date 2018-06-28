@@ -1,56 +1,84 @@
 ﻿@model ThinkPower.LabB3.Web.ViewModels.QuestionnaireDisplayViewModel
-<div class="container">
-        <div style="background-image:url(@Html.DisplayFor(model => Model.HeadBackgroundImg));width:100%;height:150px">
-            <h1 id="title">@Html.DisplayFor(model => model.QuestionnaireName)</h1>
+<div id="header" style="background-image:url(@Html.DisplayFor(model => model.HeadBackgroundImg));">
+    <h1 id="title">@Html.DisplayFor(model => model.QuestionnaireName)</h1>
+</div>
+<hr />
+<div id="content">
+    <div class="bg-info">
+        <div id="head-description">
+            <p>@Html.DisplayFor(model => model.HeadDescription)</p>
         </div>
-    <hr />
-    <div class="container alert-info">
-        <div>
-            <div>
-                <p class="">@Html.DisplayFor(model => model.HeadDescription)</p>
-            </div>
-            <div>
-                @using (Html.BeginForm("EvaluationRank", "RiskEvaluation", FormMethod.Post, htmlAttributes: new { id = "questForm" }))
+        <div id="question-content">
+            @using (Html.BeginForm("EvaluationRank", "RiskEvaluation", FormMethod.Post, htmlAttributes: new { id = "questForm" }))
+            {
+                int count = 1;
+                foreach (var quest in Model.QuestDefineEntitys)
                 {
-                    foreach (var x in Model.QuestDefEnumer)
-                    {
-                        <p> <span> @x.QuestionId &nbsp;</span> @x.QuestionContent </p>
-                        if (x.AnswerType == "F")
+                    <div class="question"
+                         data-question-id="@quest.QuestionId"
+                         data-answer-type="@quest.AnswerType"
+                         data-need-answer="@quest.NeedAnswer"
+                         data-min-multiple-answers="@quest.MinMultipleAnswers"
+                         data-max-multiple-answers="@quest.MaxMultipleAnswers"
+                         data-single-answer-condition="@quest.SingleAnswerCondition"
+                         data-allow-na-condition="@quest.AllowNaCondition">
+                        <span class="question-content">
+                            @Convert.ToString(count).&nbsp;@quest.QuestionContent
+                        </span><br />
+
+                        @if (quest.AnswerType == "F")
                         {
-                            foreach (var y in Model.QuestionAnswer[x.QuestionId])
-                            {
-                                @Html.TextBox(x.QuestionId)
-                                <p> @y.AnswerContent </p>
-                            }
-                        }
-                        if (x.AnswerType == "S")
-                        {
-                            <p>
-                                @foreach (var y in Model.QuestionAnswer[x.QuestionId])
+                            <div class="answer">
+                                @foreach (var ans in quest.AnswerDefineEntities)
                                 {
-                                    @Html.RadioButton(x.QuestionId, y.AnswerCode)<span>&nbsp;&nbsp;@y.AnswerContent&nbsp;&nbsp;</span>
+                                    @Html.TextBox(quest.QuestionId,"",new { name = quest.QuestionId, data_answer_code = ans.AnswerCode})
                                 }
-                            </p>
+                                <span id="@quest.QuestionId-validation" class="validate-text"></span>
+                            </div>
                         }
-                        if (x.AnswerType == "M")
+
+                        @if (quest.AnswerType == "S")
                         {
-                            <p>
-                                @foreach (var y in Model.QuestionAnswer[x.QuestionId])
+                            <div class="answer">
+                                @foreach (var ans in quest.AnswerDefineEntities)
                                 {
-                                    @Html.CheckBox(y.AnswerCode)<span>&nbsp;&nbsp;@y.AnswerContent&nbsp;&nbsp;</span>
+
+                                    @Html.RadioButton(quest.QuestionId, ans.AnswerCode, new { value = @ans.AnswerCode, data_have_other_answer = ans.HaveOtherAnswer })<span>&nbsp;&nbsp;@ans.AnswerContent&nbsp;&nbsp;</span>
+                                    if (ans.HaveOtherAnswer == "Y")
+                                    {
+                                        @Html.TextBox(quest.QuestionId, "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
+                                    }
                                 }
-                            </p>
+                                <span id="@quest.QuestionId-validation" class="validate-text"></span>
+                            </div>
                         }
-                    }
+                        @if (quest.AnswerType == "M")
+                        {
+                            <div class="answer">
+                                @foreach (var ans in quest.AnswerDefineEntities)
+                                {
+                                    <input id="@quest.QuestionId" name="@quest.QuestionId" type="checkbox" data-have-other-answer="@ans.HaveOtherAnswer" value="@ans.AnswerCode">
+                                    <span>&nbsp;&nbsp;@ans.AnswerContent&nbsp;&nbsp;</span>
+                                    if (ans.HaveOtherAnswer == "Y")
+                                    {
+                                        @Html.TextBox(quest.QuestionId, "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
+                                    }
+                                }
+                                <span id="@quest.QuestionId-validation" class="validate-text"></span>
+                            </div>
+                        }
+
+                        @{count++;}
+                    </div>
                 }
+                <p>@Html.Raw(Model.FooterDescription)</p>
+                <div class="text-center">
+                    <input id="Button1" type="button" value="確定" class="btn-info" onclick="return validate();" />
                 </div>
-            <div>
-                @Html.Raw(Model.FooterDescription)
-            </div>
-            <div class="text-center">
-                <input id="Button1" type="button" value="確定" class="btn-info" onclick="return SubmitClick()"/>
-            </div>
+                <br />
+            }
         </div>
     </div>
 </div>
+
 

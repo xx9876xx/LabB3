@@ -9,53 +9,41 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
-<body class="container">
-    <div class="content">
-        <div class="container page-header header">
+<body>
+    <div>
+        <div class="layout-header">
             <nav class="navbar navbar-default navbar-fixed-top">
                 <div id="nav-brand" class="navbar-header">
                     <h2>
-                        @Html.ActionLink("LabB3", "Index", "Home", new { @class = "navbar-brand" })
+                        @Html.ActionLink("LabB3", "AcceptRiskRank", "RiskEvaluation", new { @class = "navbar-brand" })
                     </h2>
                 </div>
                 <div id="nav-menu" class="navbar-right">
-                    <ul class="nav navbar-nav navbar-text">
-                        <li>@Html.ActionLink("|", "", "")</li>
-                        <li>@Html.ActionLink("首頁", "Index", "Home")</li>
-                        <li>@Html.ActionLink("|", "", "")</li>
-                        <li>@Html.ActionLink("關於", "About", "Home")</li>
-                        <li>@Html.ActionLink("|", "", "")</li>
-                        <li>@Html.ActionLink("登出", "Contact", "Home")</li>
-                        <li>@Html.ActionLink("|", "", "")</li>
+                    <ul class="nav navbar-nav nav-layout navbar-text">
+                        <li><span>|&nbsp;@Html.ActionLink("首頁", "AcceptRiskRank", "RiskEvaluation")&nbsp;</span></li>
+                        <li><span>|&nbsp;@Html.ActionLink("關於", "AcceptRiskRank", "RiskEvaluation")&nbsp;</span></li>
+                        <li><span>|&nbsp;@Html.ActionLink("登出", "AcceptRiskRank", "RiskEvaluation")&nbsp;|</span></li>
                     </ul>
                 </div>
             </nav>
         </div>
-        <div id="main" class="container body-content main">
-            @RenderBody()
+        <div class="layout-middle">
+            <div class="layout-sidebar">
+                <ul>
+                    <li><a href="/RiskEvaluation/EvaQuest/?QuestId=FNDRE001"><span class="glyphicon glyphicon-arrow-right" /><span class="h4">&nbsp;風險評估問卷(1)</span></a></li>
+                    <li><a href="/RiskEvaluation/EvaQuest/?QuestId=FNDRE002"><span class="glyphicon glyphicon-arrow-right" /><span class="h4">&nbsp;風險評估問卷(2)</span></a></li>
+                </ul>
+            </div>
+            <div class="layout-main">
+                @RenderBody()
+            </div>
         </div>
-        <div class="left">
-            <ul >
-                <li>&nbsp;</li>
-                @{ 
-                    //TODO QueryString加問卷一或二
-                    EvaluationRankActionModel act1 = new EvaluationRankActionModel("FNDRE001");
-                    EvaluationRankActionModel act2 = new EvaluationRankActionModel("FNDRE002");
-                }
-                <li><a href="@Url.Action("EvaQuest", "RiskEvaluation", act1 )"><h4 class="glyphicon glyphicon-arrow-right">&nbsp;風險評估問卷(1)</h4></a></li>
-                <li>&nbsp;</li>
-                <li><a href="@Url.Action("EvaQuest", "RiskEvaluation", act2 )"><h4 class="glyphicon glyphicon-arrow-right">&nbsp;風險評估問卷(2)</h4></a></li>
-            </ul>
-        </div>
-        <div id="footer" class="footer">
-            <hr />
-            <footer>
-                <h5 class="text-center">LabB3 Inc. All Rights Reserved</h5>
-            </footer>
-        </div>
+        <footer class="layout-footer navbar-fixed-bottom">
+            <h5 class="col-md-offset-1">LabB3 Inc. All Rights Reserved</h5>
+        </footer>
     </div>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
-</body>
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)
+    </body>
 </html>

@@ -26,8 +26,7 @@ namespace ThinkPower.LabB3.Web
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
-                      "~/Content/layoutCss.css",
-                      "~/Content/navbarCss.css",
+                      "~/Content/layout.css",
                       "~/Content/labB3.css"));
         }
     }

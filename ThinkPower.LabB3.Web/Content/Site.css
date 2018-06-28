@@ -1,14 +1,8 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+    margin: 0;
+    padding: 0;
     font-size: 16px;
-    font-family: Helvetica,'Microsoft JhengHei';
+    font-family: Helvetica,'Microsoft JhengHei','微軟正黑體';
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 

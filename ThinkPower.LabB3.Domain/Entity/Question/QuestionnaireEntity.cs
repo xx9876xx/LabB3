@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ThinkPower.LabB3.DataAccess.DAO;
 using ThinkPower.LabB3.DataAccess.DO;
 
 namespace ThinkPower.LabB3.Domain.Entity.Question
@@ -16,14 +17,25 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// 將DO載入Entity建構式
         /// </summary>
         /// <param name="dataObject"> 問卷主檔DO物件 </param>
-        public QuestionnaireEntity(QuestionnaireDO dataObject)
+        public QuestionnaireEntity(string id)
         {
-            if (dataObject == null)
+            if (id == null)
             {
                 throw new ArgumentNullException();
             }
-
-            GenerateEntity(dataObject);
+            QuestionnaireDAO questionnaireDAO = new QuestionnaireDAO();
+            QuestionnaireDO questionnaireDO = questionnaireDAO.GetQuestionnaireData(id);
+            GenerateEntity(questionnaireDO);
+            //載入問卷Uid取得題目集合DOs
+            QuestionDefineDAO questionDefineDAO = new QuestionDefineDAO();
+            IEnumerable<QuestionDefineDO> QuestionDefineDOs = questionDefineDAO.GetQuestions(Convert.ToString(Uid));
+            List<QuestDefineEntity> questDefineEntitys = new List<QuestDefineEntity>();
+            foreach (QuestionDefineDO questionDefineDO in QuestionDefineDOs)
+            {
+                QuestDefineEntity questDefineEntity = new QuestDefineEntity(questionDefineDO);
+                questDefineEntitys.Add(questDefineEntity);
+            }
+            QuestDefineEntitys = questDefineEntitys;
 
         }
         /// <summary>
@@ -81,13 +93,8 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// <summary>
         /// 題目集合
         /// </summary>
-        public IEnumerable<QuestDefineEntity> QuestDefEnumer { get; set; }
-        //TODO 問題清單裡面的問題Entity要加入選項清單屬性 命名要改一下複數加s
-        /// <summary>
-        /// 題目及選項字典集合
-        /// </summary>
-        public Dictionary<string, IEnumerable<AnswerDefineEntity>> QuestAnswerPairs { get; set; }
-
+        public IEnumerable<QuestDefineEntity> QuestDefineEntitys { get; set; }
+        
         /// <summary>
         /// 將DO物件載入Entity物件
         /// </summary>

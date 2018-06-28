@@ -49,7 +49,7 @@ namespace ThinkPower.LabB3.DataAccess.DAO
         /// </summary>
         /// <param name="questId">問卷識別項</param>
         /// <returns> 問卷題目定義集合 </returns>
-        public IEnumerable<QuestionDefineDO> GetQuestionEnumer(string questId)
+        public IEnumerable<QuestionDefineDO> GetQuestions(string questId)
         {
             try
             {

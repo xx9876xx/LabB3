@@ -44,8 +44,9 @@ namespace ThinkPower.LabB3.Web.Controllers
         {
             try
             {
+                string questId = Request.QueryString["QuestId"];
                 RiskEvaluationService riskService = new RiskEvaluationService();
-                RiskEvaQuestionnaireEntity riskEvaQuestionnaireEntity = riskService.GetRiskQuestionnaire(actionMode.Version);
+                RiskEvaQuestionnaireEntity riskEvaQuestionnaireEntity = riskService.GetRiskQuestionnaire(questId);
                 QuestionnaireDisplayViewModel viewModel = new QuestionnaireDisplayViewModel(riskEvaQuestionnaireEntity);
                 return View(viewModel);
             }
@@ -53,8 +54,9 @@ namespace ThinkPower.LabB3.Web.Controllers
             {
                 ExceptionDispatchInfo.Capture(ex).Throw();
                 return null;
+                //TODO 前端顯示>> 系統發生錯誤，請於上班時段來電客服中心0800-015-000，造成不便敬請見諒。
             }
-            
+
         }
         //TODO Div display 
     }

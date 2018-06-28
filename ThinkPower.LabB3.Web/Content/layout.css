@@ -1,0 +1,96 @@
+﻿html, body {
+    width: 100%;
+    position: relative;
+}
+
+body {
+    padding: 0px;
+}
+
+ul li {
+    list-style: none;
+}
+
+.layout-header, .layout-footer {
+    display: block;
+    width: 100%;
+    font-weight: bold;
+}
+
+.layout-footer {
+    padding-top:15px;
+    height: 60px;
+    background: #AAA;
+}
+
+/*頁面中段div*/
+.layout-middle {
+    display: block;
+    margin-top: 72.5px;
+}
+
+/*主要頁面div*/
+.layout-main {
+    display: inline-block;
+    position:relative;
+    padding: 0px;
+    margin-left:22%;
+    margin-bottom:60px;
+    width: 75%;
+}
+
+/*側邊欄div*/
+.layout-sidebar {
+    display: inline-block;
+    float: left;
+    margin-right: 20px;
+    width: 19%;
+    background: #ddd;
+    position: fixed;
+    top: 72.5px;
+    bottom: 60px;
+}
+
+/*側邊欄設定*/
+.layout-sidebar ul {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.layout-sidebar li {
+    width: 100%;
+    padding-left:14px;
+    background-color:#CCC;
+    margin-top:2px;
+    margin-bottom:2px;
+}
+
+.layout-sidebar a {
+    display: block;
+}
+
+/*導覽列設定*/
+.navbar {
+    background-color: #1351ca;
+    margin-bottom:0px;
+}
+
+.navbar .navbar-brand {
+    padding-top:10px;
+    padding-left:60px;
+    color: #ffffff;
+    font-size: larger;
+}
+.nav-layout {
+    padding-right: 20px;
+    padding-top:20px;
+}
+.navbar-default .navbar-nav > li {
+    color: #ffffff;
+}
+
+.navbar-default .navbar-nav > li > span >a {
+    color: #ffffff;
+}
+

@@ -23,8 +23,7 @@ namespace ThinkPower.LabB3.Web.ViewModels
             HeadBackgroundImg = riskEvaQuestionnaireEntity.HeadBackgroundImg;
             HeadDescription = riskEvaQuestionnaireEntity.HeadDescription;
             FooterDescription = riskEvaQuestionnaireEntity.FooterDescription;
-            QuestDefEnumer = riskEvaQuestionnaireEntity.QuestDefEnumer;
-            QuestionAnswer = riskEvaQuestionnaireEntity.QuestAnswerPairs;
+            QuestDefineEntitys = riskEvaQuestionnaireEntity.QuestDefineEntitys;
         }
 
         /// <summary>
@@ -43,19 +42,14 @@ namespace ThinkPower.LabB3.Web.ViewModels
         public string HeadDescription { get; set; }
 
         /// <summary>
-        /// 題目集合
-        /// </summary>
-        public IEnumerable<QuestDefineEntity> QuestDefEnumer { get; set; }
-
-        /// <summary>
-        /// 題目識別碼及選項字典集合
-        /// </summary>
-        public Dictionary<string, IEnumerable<AnswerDefineEntity>> QuestionAnswer { get; set; }
-        
-        /// <summary>
         /// 頁尾說明文字
         /// </summary>
         public string FooterDescription { get; set; }
+
+        /// <summary>
+        /// 題目集合
+        /// </summary>
+        public IEnumerable<QuestDefineEntity> QuestDefineEntitys { get; set; }
     }
 
 }

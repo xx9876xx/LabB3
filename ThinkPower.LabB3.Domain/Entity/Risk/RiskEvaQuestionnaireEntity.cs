@@ -45,9 +45,9 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
         /// </summary>
         public IEnumerable<QuestDefineEntity> QuestDefEnumer { get; set; }
         /// <summary>
-        /// 題目及選項字典集合
+        /// 題目集合
         /// </summary>
-        public Dictionary<string, IEnumerable<AnswerDefineEntity>> QuestAnswerPairs { get; set; }
+        public IEnumerable<QuestDefineEntity> QuestDefineEntitys { get; set; }
 
         public RiskEvaQuestionnaireEntity(QuestionnaireEntity questionnaireEntity)
         {
@@ -58,8 +58,8 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
             HeadBackgroundImg = questionnaireEntity.HeadBackgroundImg;
             HeadDescription = questionnaireEntity.HeadDescription;
             FooterDescription = questionnaireEntity.FooterDescription;
-            QuestDefEnumer = questionnaireEntity.QuestDefEnumer;
-            QuestAnswerPairs = questionnaireEntity.QuestAnswerPairs;
+            QuestDefEnumer = questionnaireEntity.QuestDefineEntitys;
+            QuestDefineEntitys = questionnaireEntity.QuestDefineEntitys;
         }
     }
 }

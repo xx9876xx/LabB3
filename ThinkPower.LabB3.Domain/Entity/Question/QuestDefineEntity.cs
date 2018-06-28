@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ThinkPower.LabB3.DataAccess.DAO;
 using ThinkPower.LabB3.DataAccess.DO;
 
 namespace ThinkPower.LabB3.Domain.Entity.Question
@@ -16,14 +17,23 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// 將DO載入Entity建構式
         /// </summary>
         /// <param name="dataObject"> 題目選項DO物件 </param>
-        public QuestDefineEntity(QuestionDefineDO dataObject)
+        public QuestDefineEntity(QuestionDefineDO questionDefineDO)
         {
-            if (dataObject == null)
+            if (questionDefineDO == null)
             {
                 throw new ArgumentNullException();
             }
-
-            generateEntity(dataObject);
+            GenerateEntity(questionDefineDO);
+            //載入問卷Uid取得題目集合DOs
+            QuestionAnswerDefineDAO questionAnswerDefineDAO = new QuestionAnswerDefineDAO();
+            IEnumerable<QuestionAnswerDefineDO> questionAnswerDefineDOs = questionAnswerDefineDAO.GetAnswerItems(Convert.ToString(Uid));
+            List<AnswerDefineEntity> answerDefineEntitys = new List<AnswerDefineEntity>();
+            foreach (QuestionAnswerDefineDO questionAnswerDefineDO in questionAnswerDefineDOs)
+            {
+                AnswerDefineEntity answerDefineEntity = new AnswerDefineEntity(questionAnswerDefineDO);
+                answerDefineEntitys.Add(answerDefineEntity);
+            }
+            AnswerDefineEntities = answerDefineEntitys;
         }
 
         /// <summary>
@@ -74,13 +84,17 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// 題目排序序號
         /// </summary>
         public int? OrderSn { get; set; }
+        /// <summary>
+        /// 選項集合
+        /// </summary>
+        public IEnumerable<AnswerDefineEntity> AnswerDefineEntities { get; set; }
 
         /// <summary>
         /// 將DO物件載入Entity物件
         /// </summary>
         /// <param name="dataObject">題目DO物件</param>
         /// <returns>載入成功/失敗</returns>
-        private void generateEntity(QuestionDefineDO dataObject)
+        private void GenerateEntity(QuestionDefineDO dataObject)
         {
             Uid = dataObject.Uid;
             CreateUserId = dataObject.CreateUserId;

@@ -22,8 +22,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
             {
                 throw new ArgumentNullException();
             }
-
-            generateEntity(dataObject);
+            GenerateEntity(dataObject);
         }
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// </summary>
         /// <param name="dataObject">問卷主檔DO物件</param>
         /// <returns>載入成功/失敗</returns>
-        private void generateEntity(QuestionAnswerDefineDO dataObject)
+        private void GenerateEntity(QuestionAnswerDefineDO dataObject)
         {
             Uid = dataObject.Uid;
             CreateUserId = dataObject.CreateUserId;
