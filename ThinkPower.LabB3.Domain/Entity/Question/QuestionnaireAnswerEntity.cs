@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ThinkPower.LabB3.DataAccess.DO;
 
 namespace ThinkPower.LabB3.Domain.Entity.Question
 {
@@ -11,29 +12,45 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
     /// </summary>
     public class QuestionnaireAnswerEntity : BaseEntity
     {
+
         /// <summary>
-        /// 問卷識別碼
+        /// 問卷答題明細Entity類別
         /// </summary>
-        public Guid QuestUid { get; set; }
+        /// <param name="answers"></param>
+        public QuestionnaireAnswerEntity(string answers)
+        {
+            if (answers == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            GenerateEntity(answers);
+        }
+
         /// <summary>
-        /// 問卷答題編號
+        /// 問卷答題識別碼
         /// </summary>
-        public string QuestAnswerId { get; set; }
+        public Guid AnswerUid { get; set; }
         /// <summary>
-        /// 填寫人員編號
+        /// 問卷題目識別碼
         /// </summary>
-        public string TesteeId { get; set; }
+        public Guid QuestionUid { get; set; }
         /// <summary>
-        /// 問卷總分
+        /// 答案代碼
         /// </summary>
-        public int QuestScore { get; set; }
+        public string AnswerCode { get; set; }
         /// <summary>
-        /// 問卷得分
+        /// 答題其他說明
         /// </summary>
-        public int ActualScore { get; set; }
+        public string OtherAnswer { get; set; }
         /// <summary>
-        /// 問卷填寫來源代號
+        /// 答題計分分數
         /// </summary>
-        public string TesteeSource { get; set; }
+        public int? Score { get; set; }
+
+        private void GenerateEntity(string a)
+        {
+
+        }
     }
 }

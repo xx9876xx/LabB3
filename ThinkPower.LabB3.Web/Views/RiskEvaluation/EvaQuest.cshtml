@@ -29,10 +29,14 @@
                         @if (quest.AnswerType == "F")
                         {
                             <div class="answer">
-                                @foreach (var ans in quest.AnswerDefineEntities)
-                                {
-                                    @Html.TextBox(quest.QuestionId,"",new { name = quest.QuestionId, data_answer_code = ans.AnswerCode})
-                                }
+                                <ul>
+                                    @foreach (var ans in quest.AnswerDefineEntities)
+                                    {
+                                    <li>
+                                        @Html.TextBox(quest.QuestionId, "", new { name = quest.QuestionId, data_answer_code = ans.AnswerCode })
+                                    </li>
+                                    }
+                                </ul>
                                 <span id="@quest.QuestionId-validation" class="validate-text"></span>
                             </div>
                         }
@@ -40,30 +44,39 @@
                         @if (quest.AnswerType == "S")
                         {
                             <div class="answer">
-                                @foreach (var ans in quest.AnswerDefineEntities)
-                                {
-
-                                    @Html.RadioButton(quest.QuestionId, ans.AnswerCode, new { value = @ans.AnswerCode, data_have_other_answer = ans.HaveOtherAnswer })<span>&nbsp;&nbsp;@ans.AnswerContent&nbsp;&nbsp;</span>
-                                    if (ans.HaveOtherAnswer == "Y")
+                                <ul>
+                                    @foreach (var ans in quest.AnswerDefineEntities)
                                     {
-                                        @Html.TextBox(quest.QuestionId, "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
+                                    <li>
+                                        @Html.RadioButton(quest.QuestionId, ans.AnswerCode, new { value = @ans.AnswerCode, data_have_other_answer = ans.HaveOtherAnswer })
+                                        <span>&nbsp;&nbsp;@ans.AnswerContent&nbsp;&nbsp;</span>
+
+                                        @if (ans.HaveOtherAnswer == "Y")
+                                        {
+                                            @Html.TextBox(quest.QuestionId, "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
+                                        }
+                                    </li>
                                     }
-                                }
+                                </ul>
                                 <span id="@quest.QuestionId-validation" class="validate-text"></span>
                             </div>
                         }
                         @if (quest.AnswerType == "M")
                         {
                             <div class="answer">
-                                @foreach (var ans in quest.AnswerDefineEntities)
-                                {
-                                    <input id="@quest.QuestionId" name="@quest.QuestionId" type="checkbox" data-have-other-answer="@ans.HaveOtherAnswer" value="@ans.AnswerCode">
-                                    <span>&nbsp;&nbsp;@ans.AnswerContent&nbsp;&nbsp;</span>
-                                    if (ans.HaveOtherAnswer == "Y")
+                                <ul>
+                                    @foreach (var ans in quest.AnswerDefineEntities)
                                     {
-                                        @Html.TextBox(quest.QuestionId, "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
+                                    <li>
+                                        <input id="@quest.QuestionId" name="@quest.QuestionId" type="checkbox" data-have-other-answer="@ans.HaveOtherAnswer" value="@ans.AnswerCode">
+                                        <span>&nbsp;&nbsp;@ans.AnswerContent&nbsp;&nbsp;</span>
+                                        @if (ans.HaveOtherAnswer == "Y")
+                                        {
+                                            @Html.TextBox(quest.QuestionId, "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
+                                        }
+                                    </li>
                                     }
-                                }
+                                </ul>
                                 <span id="@quest.QuestionId-validation" class="validate-text"></span>
                             </div>
                         }
@@ -73,7 +86,7 @@
                 }
                 <p>@Html.Raw(Model.FooterDescription)</p>
                 <div class="text-center">
-                    <input id="Button1" type="button" value="確定" class="btn-info" onclick="return validate();" />
+                    <input id="submit-button" type="button" value="確定" class="btn-info"/>
                 </div>
                 <br />
             }

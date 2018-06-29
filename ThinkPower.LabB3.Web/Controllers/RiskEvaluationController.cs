@@ -9,6 +9,7 @@ using ThinkPower.LabB3.Web.ViewModels;
 using ThinkPower.LabB3.Domain.DTO;
 using ThinkPower.LabB3.Domain.Entity.Risk;
 using System.Runtime.ExceptionServices;
+using ThinkPower.LabB3.Domain.Entity.Question;
 
 namespace ThinkPower.LabB3.Web.Controllers
 {
@@ -32,7 +33,21 @@ namespace ThinkPower.LabB3.Web.Controllers
         [HttpPost]
         public ActionResult EvaluationRank(FormCollection answers)
         {
-            return View();
+            //答題結果
+            string result = "";
+            foreach (string ans in answers)
+            {
+                result = result + "[" + ans + ":" + answers[ans].ToString() + "];";
+            }
+            //TODO 未完成 
+            QuestionnaireService questionnaireService = new QuestionnaireService();
+            QuestionnaireAnswerEntity questionnaireAnswerEntity = new QuestionnaireAnswerEntity(result);
+            questionnaireService.Calculate(questionnaireAnswerEntity);
+            
+            
+            //TODO 暫時轉的View
+            return RedirectToAction("AcceptRiskRank");
+            //return View();
         }
         /// <summary>
         /// 進行投資風險評估問卷填答

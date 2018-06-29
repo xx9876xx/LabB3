@@ -12,6 +12,15 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
     /// </summary>
     public class RiskEvaQuestionnaireEntity : BaseEntity
     {
+        public RiskEvaQuestionnaireEntity(QuestionnaireEntity questionnaireEntity)
+        {
+            if (questionnaireEntity == null)
+            {
+                throw new ArgumentNullException();
+            }            
+            GenerateEntity(questionnaireEntity);
+        }
+
         /// <summary>
         /// 問卷編號
         /// </summary>
@@ -49,7 +58,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
         /// </summary>
         public IEnumerable<QuestDefineEntity> QuestDefineEntitys { get; set; }
 
-        public RiskEvaQuestionnaireEntity(QuestionnaireEntity questionnaireEntity)
+        private void GenerateEntity(QuestionnaireEntity questionnaireEntity)
         {
             QuestId = questionnaireEntity.QuestId;
             Name = questionnaireEntity.Name;

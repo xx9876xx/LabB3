@@ -50,6 +50,8 @@ namespace ThinkPower.LabB3.Web.ViewModels
         /// 題目集合
         /// </summary>
         public IEnumerable<QuestDefineEntity> QuestDefineEntitys { get; set; }
+
+
     }
 
 }
