@@ -22,6 +22,11 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
         }
 
         /// <summary>
+        /// 問卷識別碼
+        /// </summary>
+        public Guid QuestUid { get; set; }
+
+        /// <summary>
         /// 問卷編號
         /// </summary>
         public string QuestId { get; set; }
@@ -32,7 +37,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
         /// <summary>
         /// 問卷總分數
         /// </summary>
-        public string QuestScore { get; set; }
+        public int? QuestScore { get; set; }
         /// <summary>
         /// 計分方式
         /// </summary>
@@ -60,6 +65,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
 
         private void GenerateEntity(QuestionnaireEntity questionnaireEntity)
         {
+            QuestUid = questionnaireEntity.Uid;
             QuestId = questionnaireEntity.QuestId;
             Name = questionnaireEntity.Name;
             QuestScore = questionnaireEntity.QuestScore;

@@ -6,7 +6,6 @@ using System.Web.Mvc;
 using ThinkPower.LabB3.Domain.Service;
 using ThinkPower.LabB3.Web.ActionModels;
 using ThinkPower.LabB3.Web.ViewModels;
-using ThinkPower.LabB3.Domain.DTO;
 using ThinkPower.LabB3.Domain.Entity.Risk;
 using System.Runtime.ExceptionServices;
 using ThinkPower.LabB3.Domain.Entity.Question;
@@ -23,7 +22,15 @@ namespace ThinkPower.LabB3.Web.Controllers
         [HttpGet]
         public ActionResult AcceptRiskRank(SaveRankActionModel actionModel)
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ExceptionDispatchInfo.Capture(ex).Throw();
+                return null;
+            }
         }
         /// <summary>
         /// 執行評估投資風險等級
@@ -33,21 +40,43 @@ namespace ThinkPower.LabB3.Web.Controllers
         [HttpPost]
         public ActionResult EvaluationRank(FormCollection answers)
         {
-            //答題結果
-            string result = "";
-            foreach (string ans in answers)
+            try
             {
-                result = result + "[" + ans + ":" + answers[ans].ToString() + "];";
+                //TODO UserId 屬於識別資訊，要在後端串出來，並非從前端帶，ActionMode的建構式可以被前端重整就可以重改，也不行
+                //TODO 要用Session去判斷是否為同一個UserId，也可以用儲存Cache或是存資料庫來做判別
+                RiskEvaAnswerEntity answerEntity = new RiskEvaAnswerEntity();
+                if (answers.AllKeys.Contains("QuestUid"))
+                {
+                    answerEntity.QuestUid = Guid.Parse(answers["QuestUid"]);
+                    answers.Remove("QuestUid");
+                }
+                
+                if (answers.AllKeys.Contains("QuestionnaireId"))
+                {
+                    answerEntity.QuestionnaireId = answers["QuestionnaireId"];
+                    answers.Remove("QuestionnaireId");
+                }
+                //答題結果
+                Dictionary<string, string> answerItems = new Dictionary<string, string>();
+                foreach (string ans in answers)
+                {
+                    answerItems.Add(ans, answers[ans].ToString());
+                }
+                answerEntity.AnswerItems = answerItems;
+
+                RiskEvaluationService riskEvaluationService = new RiskEvaluationService();
+                riskEvaluationService.EvaluateRiskRank(answerEntity);
+
+                
+                //TODO 暫時轉的View
+                return RedirectToAction("AcceptRiskRank");
+                //return View();
             }
-            //TODO 未完成 
-            QuestionnaireService questionnaireService = new QuestionnaireService();
-            QuestionnaireAnswerEntity questionnaireAnswerEntity = new QuestionnaireAnswerEntity(result);
-            questionnaireService.Calculate(questionnaireAnswerEntity);
-            
-            
-            //TODO 暫時轉的View
-            return RedirectToAction("AcceptRiskRank");
-            //return View();
+            catch (Exception ex)
+            {
+                ExceptionDispatchInfo.Capture(ex).Throw();
+                return null;
+            }
         }
         /// <summary>
         /// 進行投資風險評估問卷填答
@@ -59,10 +88,15 @@ namespace ThinkPower.LabB3.Web.Controllers
         {
             try
             {
-                string questId = Request.QueryString["QuestId"];
                 RiskEvaluationService riskService = new RiskEvaluationService();
-                RiskEvaQuestionnaireEntity riskEvaQuestionnaireEntity = riskService.GetRiskQuestionnaire(questId);
-                QuestionnaireDisplayViewModel viewModel = new QuestionnaireDisplayViewModel(riskEvaQuestionnaireEntity);
+                RiskEvaQuestionnaireEntity riskEvaQuestionnaireEntity = riskService.GetRiskQuestionnaire(actionMode.QuestId);
+                QuestionnaireDisplayViewModel viewModel = new QuestionnaireDisplayViewModel(riskEvaQuestionnaireEntity)
+                {
+                    QuestionnaireId = actionMode.QuestionnaireId
+                };
+                
+                
+                
                 return View(viewModel);
             }
             catch (Exception ex)
@@ -72,7 +106,6 @@ namespace ThinkPower.LabB3.Web.Controllers
                 //TODO 前端顯示>> 系統發生錯誤，請於上班時段來電客服中心0800-015-000，造成不便敬請見諒。
             }
 
-        }
-        //TODO Div display 
+        }        
     }
 }

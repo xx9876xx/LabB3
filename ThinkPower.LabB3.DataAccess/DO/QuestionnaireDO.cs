@@ -50,7 +50,7 @@ namespace ThinkPower.LabB3.DataAccess.DO
         /// <summary>
         /// 問卷總分數
         /// </summary>
-        public string QuestScore { get; set; }
+        public int? QuestScore { get; set; }
         /// <summary>
         /// 計分方式
         /// </summary>

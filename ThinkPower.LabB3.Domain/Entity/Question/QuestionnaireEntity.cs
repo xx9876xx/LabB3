@@ -14,9 +14,35 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
     public class QuestionnaireEntity : BaseEntity
     {
         /// <summary>
-        /// 將DO載入Entity建構式
+        /// 指定問卷識別項生成問卷Entity的建構式
         /// </summary>
-        /// <param name="dataObject"> 問卷主檔DO物件 </param>
+        /// <param name="uid">問卷識別項</param>
+        public QuestionnaireEntity(Guid uid)
+        {
+            if (uid == null)
+            {
+                throw new ArgumentNullException();
+            }
+            QuestionnaireDAO questionnaireDAO = new QuestionnaireDAO();
+            QuestionnaireDO questionnaireDO = questionnaireDAO.GetQuestionnaireData(uid);
+            GenerateEntity(questionnaireDO);
+            //載入問卷Uid取得題目集合DOs
+            QuestionDefineDAO questionDefineDAO = new QuestionDefineDAO();
+            IEnumerable<QuestionDefineDO> QuestionDefineDOs = questionDefineDAO.GetQuestions(Convert.ToString(Uid));
+            List<QuestDefineEntity> questDefineEntitys = new List<QuestDefineEntity>();
+            foreach (QuestionDefineDO questionDefineDO in QuestionDefineDOs)
+            {
+                QuestDefineEntity questDefineEntity = new QuestDefineEntity(questionDefineDO);
+                questDefineEntitys.Add(questDefineEntity);
+            }
+            QuestDefineEntitys = questDefineEntitys;
+
+        }
+
+        /// <summary>
+        /// 指定問卷編號生成問卷Entity的建構式
+        /// </summary>
+        /// <param name="id"> 問卷編號 </param>
         public QuestionnaireEntity(string id)
         {
             if (id == null)
@@ -38,6 +64,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
             QuestDefineEntitys = questDefineEntitys;
 
         }
+
         /// <summary>
         /// 問卷編號
         /// </summary>
@@ -73,7 +100,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// <summary>
         /// 問卷總分數
         /// </summary>
-        public string QuestScore { get; set; }
+        public int? QuestScore { get; set; }
         /// <summary>
         /// 計分方式
         /// </summary>

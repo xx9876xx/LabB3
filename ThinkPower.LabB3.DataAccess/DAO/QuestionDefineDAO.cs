@@ -43,6 +43,12 @@ namespace ThinkPower.LabB3.DataAccess.DAO
                 return 0;
             }
         }
+        //TODO 未完成
+        public QuestionDefineDO GetQuestionDefineByQuestionId(Guid uid, string questionId)
+        {
+            return null;
+        }
+
 
         /// <summary>
         /// 查詢指定問卷之題目定義集合

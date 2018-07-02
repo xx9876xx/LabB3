@@ -17,10 +17,14 @@ namespace ThinkPower.LabB3.Domain.Service
         /// <summary>
         /// 評估投資風險等級
         /// </summary>
-        /// <param name="uid"></param>
-        /// <returns></returns>
-        public RiskEvaResultDTO EvaluateRiskRank(RiskEvaAnswerDTO uid)
+        /// <param name="answerEntity"> 風險評估填答資料 </param>
+        /// <returns> 風險評估結果 </returns>
+        public RiskEvaResultEntity EvaluateRiskRank(RiskEvaAnswerEntity riskAnswerEntity)
         {
+            QuestionnaireAnswerEntity questAnswerEntity = new QuestionnaireAnswerEntity(riskAnswerEntity);
+            QuestionnaireService questService = new QuestionnaireService();
+            questService.Calculate(questAnswerEntity);
+
             return null;
         }
         /// <summary>

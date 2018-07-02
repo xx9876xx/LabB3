@@ -11,5 +11,20 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
     /// </summary>
     public class RiskEvaAnswerEntity : BaseEntity
     {
+        /// <summary>
+        /// 問卷識別項
+        /// </summary>
+        public Guid QuestUid { get; set; }
+
+        /// <summary>
+        /// 問卷填寫來源代號
+        /// </summary>
+        public string QuestionnaireId { get; set; }
+
+        /// <summary>
+        /// 風險問卷填答結果
+        /// </summary>
+        public Dictionary<string, string> AnswerItems { get; set; }
+
     }
 }

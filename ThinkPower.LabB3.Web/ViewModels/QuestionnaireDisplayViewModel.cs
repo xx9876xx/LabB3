@@ -19,6 +19,7 @@ namespace ThinkPower.LabB3.Web.ViewModels
         /// <param name="riskEvaQuestionnaireEntity"> </param>
         public QuestionnaireDisplayViewModel(RiskEvaQuestionnaireEntity riskEvaQuestionnaireEntity)
         {
+            QuestUid = riskEvaQuestionnaireEntity.QuestUid;
             QuestionnaireName = riskEvaQuestionnaireEntity.Name;
             HeadBackgroundImg = riskEvaQuestionnaireEntity.HeadBackgroundImg;
             HeadDescription = riskEvaQuestionnaireEntity.HeadDescription;
@@ -51,6 +52,15 @@ namespace ThinkPower.LabB3.Web.ViewModels
         /// </summary>
         public IEnumerable<QuestDefineEntity> QuestDefineEntitys { get; set; }
 
+        /// <summary>
+        /// 問卷識別項
+        /// </summary>
+        public Guid QuestUid { get; set; }
+
+        /// <summary>
+        /// 問卷填寫來源代號
+        /// </summary>
+        public string QuestionnaireId { get; set; }
 
     }
 
