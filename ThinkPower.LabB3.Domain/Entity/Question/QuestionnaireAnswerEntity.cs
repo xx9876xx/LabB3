@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ThinkPower.LabB3.DataAccess.DAO;
 using ThinkPower.LabB3.DataAccess.DO;
 using ThinkPower.LabB3.Domain.Entity.Risk;
 
 namespace ThinkPower.LabB3.Domain.Entity.Question
 {
     /// <summary>
-    /// 問卷答題主檔Entity類別
+    /// 問卷填答主檔Entity類別
     /// </summary>
     public class QuestionnaireAnswerEntity : BaseEntity
     {
 
         /// <summary>
-        /// 問卷答題明細Entity類別
+        /// 問卷填答主檔Entity類別
         /// </summary>
         /// <param name="riskAnswerEntity"></param>
         public QuestionnaireAnswerEntity(RiskEvaAnswerEntity riskAnswerEntity)
@@ -28,42 +29,48 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
             GenerateEntity(riskAnswerEntity);
         }
 
-        /// <summary>
-        /// 問卷答題識別碼
-        /// </summary>
-        public Guid AnswerUid { get; set; }
-        /// <summary>
-        /// 問卷題目識別碼
-        /// </summary>
-        public Guid QuestionUid { get; set; }
-        /// <summary>
-        /// 答案代碼
-        /// </summary>
-        public string AnswerCode { get; set; }
-        /// <summary>
-        /// 答題其他說明
-        /// </summary>
-        public string OtherAnswer { get; set; }
-        /// <summary>
-        /// 答題計分分數
-        /// </summary>
-        public int? Score { get; set; }
+        public bool SaveQuestionnaireAnswerData()
+        {
+            QuestionnaireAnswerDO questionnaireAnswerDO = new QuestionnaireAnswerDO();
+            questionnaireAnswerDO.Uid = Uid;
+            questionnaireAnswerDO.QuestUid = QuestUid;
+            questionnaireAnswerDO.QuestAnswerId = QuestAnswerId;
+            questionnaireAnswerDO.TesteeId = TesteeId;
+            questionnaireAnswerDO.QuestScore = QuestScore;
+            questionnaireAnswerDO.ActualScore = ActualScore;
+            questionnaireAnswerDO.TesteeSource = TesteeSource;
+            questionnaireAnswerDO.CreateUserId = CreateUserId;
+            questionnaireAnswerDO.CreateTime = CreateTime;
+
+            QuestionnaireAnswerDetailDAO questionnaireAnswerDetailDAO = new QuestionnaireAnswerDetailDAO();
+            return questionnaireAnswerDetailDAO.SetQuestionnaireData(questionnaireAnswerDO);
+        }
 
         /// <summary>
-        /// 問卷識別項
+        /// 問卷識別碼
         /// </summary>
         public Guid QuestUid { get; set; }
-
         /// <summary>
-        /// 填寫人員編號 (每次登入隨機產生)
+        /// 問卷答題編號
         /// </summary>
-        public string UserId { get; set; }
-
+        public string QuestAnswerId { get; set; }
+        /// <summary>
+        /// 填寫人員編號
+        /// </summary>
+        public string TesteeId { get; set; }
+        /// <summary>
+        /// 問卷總分
+        /// </summary>
+        public int? QuestScore { get; set; }
+        /// <summary>
+        /// 問卷得分
+        /// </summary>
+        public int? ActualScore { get; set; }
         /// <summary>
         /// 問卷填寫來源代號
         /// </summary>
-        public string QuestionnaireId { get; set; }
-
+        public string TesteeSource { get; set; }
+        
         /// <summary>
         /// 風險問卷填答結果
         /// </summary>
@@ -71,10 +78,15 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
 
         private void GenerateEntity(RiskEvaAnswerEntity riskAnswerEntity)
         {
+            Uid = Guid.NewGuid();
             QuestUid = riskAnswerEntity.QuestUid;
-            QuestionnaireId = riskAnswerEntity.QuestionnaireId;
-            AnswerItems = riskAnswerEntity.AnswerItems;
+            QuestAnswerId = string.Format("{0:yyMMddHHmmssfff}", DateTime.Now);
+            TesteeId = string.Format("{0:yyyydd}", DateTime.Now);
 
+            TesteeSource = riskAnswerEntity.TesteeSource;
+            AnswerItems = riskAnswerEntity.AnswerItems;
+            CreateUserId = TesteeId;
+            CreateTime = DateTime.Now;
         }
     }
 }

@@ -63,12 +63,18 @@ namespace ThinkPower.LabB3.Domain.Service
                             }
                         }
                     }
+                    answer.ActualScore = sum;
 
                     if (sum > (questionnaireEntity.QuestScore == null ? throw new InvalidCastException() : Convert.ToInt32(questionnaireEntity.QuestScore)))
                     {
                         sum = Convert.ToInt32(questionnaireEntity.QuestScore);
                     }
-                    
+
+                    answer.QuestScore = sum;
+                    if (!answer.SaveQuestionnaireAnswerData())
+                    {
+                        throw new ApplicationException("問卷答題主檔存檔失敗!");
+                    }
 
                 }
                 return null;

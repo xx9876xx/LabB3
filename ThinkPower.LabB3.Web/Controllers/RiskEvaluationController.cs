@@ -51,10 +51,10 @@ namespace ThinkPower.LabB3.Web.Controllers
                     answers.Remove("QuestUid");
                 }
                 
-                if (answers.AllKeys.Contains("QuestionnaireId"))
+                if (answers.AllKeys.Contains("TesteeSource"))
                 {
-                    answerEntity.QuestionnaireId = answers["QuestionnaireId"];
-                    answers.Remove("QuestionnaireId");
+                    answerEntity.TesteeSource = answers["TesteeSource"];
+                    answers.Remove("TesteeSource");
                 }
                 //答題結果
                 Dictionary<string, string> answerItems = new Dictionary<string, string>();
@@ -92,7 +92,7 @@ namespace ThinkPower.LabB3.Web.Controllers
                 RiskEvaQuestionnaireEntity riskEvaQuestionnaireEntity = riskService.GetRiskQuestionnaire(actionMode.QuestId);
                 QuestionnaireDisplayViewModel viewModel = new QuestionnaireDisplayViewModel(riskEvaQuestionnaireEntity)
                 {
-                    QuestionnaireId = actionMode.QuestionnaireId
+                    TesteeSource = actionMode.TesteeSource
                 };
                 
                 

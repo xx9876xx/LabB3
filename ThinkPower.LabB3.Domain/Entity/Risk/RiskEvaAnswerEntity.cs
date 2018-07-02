@@ -19,7 +19,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
         /// <summary>
         /// 問卷填寫來源代號
         /// </summary>
-        public string QuestionnaireId { get; set; }
+        public string TesteeSource { get; set; }
 
         /// <summary>
         /// 風險問卷填答結果

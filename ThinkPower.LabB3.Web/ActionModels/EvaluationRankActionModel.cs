@@ -10,7 +10,7 @@ namespace ThinkPower.LabB3.Web.ActionModels
         public EvaluationRankActionModel()
         {
             //this.UserId = GetRandomString("EvaUser_",6);
-            this.QuestionnaireId = "LabB3";
+            this.TesteeSource = "LabB3";
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace ThinkPower.LabB3.Web.ActionModels
         /// <summary>
         /// 問卷填寫來源代號
         /// </summary>
-        public string QuestionnaireId { get; set; }
+        public string TesteeSource { get; set; }
 
         /// <summary>
         /// 產生亂數UserId

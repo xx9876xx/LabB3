@@ -12,7 +12,7 @@
             @using (Html.BeginForm("EvaluationRank", "RiskEvaluation", FormMethod.Post, htmlAttributes: new { id = "questForm" }))
             {
                 @Html.HiddenFor(model => model.QuestUid)
-                @Html.HiddenFor(model => model.QuestionnaireId)
+                @Html.HiddenFor(model => model.TesteeSource)
                 int count = 1;
                 foreach (var quest in Model.QuestDefineEntitys)
                 {

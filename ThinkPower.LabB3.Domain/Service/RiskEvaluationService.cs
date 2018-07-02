@@ -19,9 +19,9 @@ namespace ThinkPower.LabB3.Domain.Service
         /// </summary>
         /// <param name="answerEntity"> 風險評估填答資料 </param>
         /// <returns> 風險評估結果 </returns>
-        public RiskEvaResultEntity EvaluateRiskRank(RiskEvaAnswerEntity riskAnswerEntity)
+        public RiskEvaResultDTO EvaluateRiskRank(RiskEvaAnswerEntity answer)
         {
-            QuestionnaireAnswerEntity questAnswerEntity = new QuestionnaireAnswerEntity(riskAnswerEntity);
+            QuestionnaireAnswerEntity questAnswerEntity = new QuestionnaireAnswerEntity(answer);
             QuestionnaireService questService = new QuestionnaireService();
             questService.Calculate(questAnswerEntity);
 
@@ -32,7 +32,7 @@ namespace ThinkPower.LabB3.Domain.Service
         /// </summary>
         /// <param name="uid">紀錄識別碼</param>
         /// <returns></returns>
-        public RiskEvaluationDTO Get(string uid)
+        public RiskEvaluationEntity Get(string uid)
         {
             return null;
         }
@@ -63,7 +63,7 @@ namespace ThinkPower.LabB3.Domain.Service
         /// </summary>
         /// <param name="riskRankKind">投資風險屬性</param>
         /// <returns></returns>
-        public List<string> RiskRank(string riskRankKind)
+        public IEnumerable<string> RiskRank(string riskRankKind)
         {
             return null;
         }

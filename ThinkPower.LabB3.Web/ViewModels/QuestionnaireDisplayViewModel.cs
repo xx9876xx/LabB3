@@ -60,7 +60,7 @@ namespace ThinkPower.LabB3.Web.ViewModels
         /// <summary>
         /// 問卷填寫來源代號
         /// </summary>
-        public string QuestionnaireId { get; set; }
+        public string TesteeSource { get; set; }
 
     }
 
