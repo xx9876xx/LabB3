@@ -15,6 +15,7 @@ namespace ThinkPower.LabB3.Domain.Service
 {
     //TODO 補interface的公開方法
     //TODO 計分呼叫檢核的private方法再執行計分，如果Entity有足夠資訊(先拿到檢核資訊、再做判斷),可以創一個檢核function，讓Serice呼叫檢核方法來判斷流程是否可以繼續往下走，也可以直接先在Entity收資料直接做檢核
+    //TODO 重構一下Calculate裡面的同樣方法和資料物件導向化 
     public class QuestionnaireService
     {
         /// <summary>
@@ -26,58 +27,77 @@ namespace ThinkPower.LabB3.Domain.Service
         {
             if (answer == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(answer));
             }
 
             try
             {
-                //得到此份問卷的計分資訊
+                //此份問卷的計分資訊
                 QuestionnaireEntity questionnaireEntity = GetQuestionnaire(Convert.ToString(answer.QuestUid));
 
-                if (questionnaireEntity.NeedScore == "N")
-                {
-                    return null;
-                    //您的問卷己填答完畢，謝謝您的參與
-                }
+                QuestionnaireAnswerEntity answerResult = SetAnswerDetail(answer, questionnaireEntity);
 
                 if (questionnaireEntity.NeedScore == "Y")
                 {
                     int sum = 0;
-                    //計分方式為加總
-                    if (questionnaireEntity.ScoreKind == "1")
+                    switch (questionnaireEntity.ScoreKind)
                     {
-                        Dictionary<string, string> answerItems = answer.AnswerItems;
-                        
-                        foreach (var QuestDefineEntity in questionnaireEntity.QuestDefineEntitys)
+                        //加總
+                        case "1":
+                            break;
+                        //取最高
+                        case "2":
+                            break;
+                        //取最低
+                        case "3":
+                            break;
+                        //平均
+                        case "4":
+                            break;
+
+                    }
+                        foreach (var question in answerResult.Questions)
                         {
-                            if (answerItems.Keys.Contains(QuestDefineEntity.QuestionId))
-                            {
-                                foreach (var answerDefineEntitiy in QuestDefineEntity.AnswerDefineEntities)
-                                {
-                                    string[] answerItemArray = answerItems[QuestDefineEntity.QuestionId].Split(',');
-                                    if (answerItemArray.Contains(answerDefineEntitiy.AnswerCode))
-                                    {
-                                        sum += answerDefineEntitiy.Score == null ? throw new InvalidCastException() : Convert.ToInt32(answerDefineEntitiy.Score);
-                                    }
-                                }
-                            }
+                            sum += question.Score.Value;
                         }
-                    }
+                    
+
+                    //問卷得分
                     answer.ActualScore = sum;
+                    //問卷總分
+                    answer.QuestScore = questionnaireEntity.QuestScore;
 
-                    if (sum > (questionnaireEntity.QuestScore == null ? throw new InvalidCastException() : Convert.ToInt32(questionnaireEntity.QuestScore)))
-                    {
-                        sum = Convert.ToInt32(questionnaireEntity.QuestScore);
-                    }
-
-                    answer.QuestScore = sum;
-                    if (!answer.SaveQuestionnaireAnswerData())
-                    {
-                        throw new ApplicationException("問卷答題主檔存檔失敗!");
-                    }
 
                 }
+
+
+
+
                 return null;
+                //QuestionnaireEntity questionnaireEntity = GetQuestionnaire(Convert.ToString(answer.QuestUid));
+                ////填答項目集合
+                ////欲儲存的問卷填答項目Entity
+                //AnswerDetailEntity answerDetail = new AnswerDetailEntity();
+
+                ////TODO 把題目選項疊代統整成一個method
+
+                
+                //    //您的問卷己填答完畢，謝謝您的參與
+
+                //    //問卷得分
+                //    answer.ActualScore = sum;
+
+                //    if (sum > (questionnaireEntity.QuestScore == null ? throw new InvalidCastException() : Convert.ToInt32(questionnaireEntity.QuestScore)))
+                //    {
+                //        sum = Convert.ToInt32(questionnaireEntity.QuestScore);
+                //    }
+
+                //    //問卷總分
+                //    answer.QuestScore = sum;
+
+                //    answer.SaveQuestionnaireAnswer();
+                //    answerDetail.SaveQuestionnaireAnswer();
+
             }
             catch (Exception ex)
             {
@@ -85,6 +105,59 @@ namespace ThinkPower.LabB3.Domain.Service
                 return null;
             }
 
+
+            
+        }
+            
+    
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="answer"> 填答問卷主檔Entity </param>
+        /// <param name="questionnaireEntity"> 問卷計分資訊 </param>
+        /// <returns></returns>
+        private QuestionnaireAnswerEntity SetAnswerDetail(QuestionnaireAnswerEntity answer, QuestionnaireEntity questionnaireEntity)
+        {
+            //針對每個填答
+            foreach (var question in answer.Questions)
+            {
+                var AnswerDefines = from quest in questionnaireEntity.QuestDefineEntitys
+                                    where (quest.QuestionId == question.QuestionId)
+                                    select new {quest.AnswerDefineEntities};
+
+                //填入題目Uid
+                question.QuestionUid = AnswerDefines.First().QuestionUid;
+
+                string[]answers = question.AnswerCode.Split(',');
+                var scoreQuery = from ans in AnswerDefines
+                                 where (answers.Contains(ans.AnswerCode))
+                                 select new { ans.Score };
+                if (questionnaireEntity.NeedScore == "Y")
+                {
+                    switch (questionnaireEntity.ScoreKind)
+                    {
+                        //加總
+                        case "1":
+                            question.Score = scoreQuery.Sum(e => e.Score);
+                            break;
+                        //取最高
+                        case "2":
+                            question.Score = scoreQuery.OrderByDescending(e => e.Score).First().Score;
+                            break;
+                        //取最低
+                        case "3":
+                            question.Score = scoreQuery.OrderBy(e => e.Score).First().Score;
+                            break;
+                        //平均
+                        case "4":
+                            question.Score = (int)scoreQuery.Average(e => e.Score);
+                            break;
+                    }
+                }
+                
+                
+            }
+            return answer;
         }
 
         /// <summary>

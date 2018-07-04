@@ -10,5 +10,6 @@ namespace ThinkPower.LabB3.Web.ActionModels
     /// </summary>
     public class SaveRankActionModel
     {
+
     }
 }

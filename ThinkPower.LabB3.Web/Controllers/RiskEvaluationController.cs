@@ -9,6 +9,7 @@ using ThinkPower.LabB3.Web.ViewModels;
 using ThinkPower.LabB3.Domain.Entity.Risk;
 using System.Runtime.ExceptionServices;
 using ThinkPower.LabB3.Domain.Entity.Question;
+using ThinkPower.LabB3.Domain.DTO;
 
 namespace ThinkPower.LabB3.Web.Controllers
 {
@@ -40,32 +41,58 @@ namespace ThinkPower.LabB3.Web.Controllers
         [HttpPost]
         public ActionResult EvaluationRank(FormCollection answers)
         {
+            if (answers == null)
+            {
+                throw new ArgumentNullException(nameof(answers));
+            }
             try
             {
                 //TODO UserId 屬於識別資訊，要在後端串出來，並非從前端帶，ActionMode的建構式可以被前端重整就可以重改，也不行
                 //TODO 要用Session去判斷是否為同一個UserId，也可以用儲存Cache或是存資料庫來做判別
-                RiskEvaAnswerEntity answerEntity = new RiskEvaAnswerEntity();
+
+                RiskEvaAnswerEntity riskAnswerEntity = new RiskEvaAnswerEntity();
+
+                //問卷識別碼 (參考問卷主檔Uid)
                 if (answers.AllKeys.Contains("QuestUid"))
                 {
-                    answerEntity.QuestUid = Guid.Parse(answers["QuestUid"]);
+                    riskAnswerEntity.QuestUid = Guid.Parse(answers["QuestUid"]);
                     answers.Remove("QuestUid");
                 }
-                
+
+                //問卷填寫來源代號 (固定為LabB3)
                 if (answers.AllKeys.Contains("TesteeSource"))
                 {
-                    answerEntity.TesteeSource = answers["TesteeSource"];
+                    riskAnswerEntity.TesteeSource = answers["TesteeSource"];
                     answers.Remove("TesteeSource");
                 }
-                //答題結果
-                Dictionary<string, string> answerItems = new Dictionary<string, string>();
+
+                //填答資料載入(填充題和其他說明)
+                List<AnswerDetailEntity> questions = new List<AnswerDetailEntity>();
                 foreach (string ans in answers)
                 {
-                    answerItems.Add(ans, answers[ans].ToString());
+                    if (ans.Contains("-other"))
+                    {
+                        string questionId = ans.Replace("-other", "");
+                        foreach (var question in questions)
+                        {
+                            if (question.QuestionId == questionId)
+                            {
+                                question.OtherAnswer = answers[ans];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        AnswerDetailEntity question = new AnswerDetailEntity();
+                        question.QuestionId = ans;
+                        question.AnswerCode = answers[ans];                        
+                        questions.Add(question);
+                    }
                 }
-                answerEntity.AnswerItems = answerItems;
-
-                RiskEvaluationService riskEvaluationService = new RiskEvaluationService();
-                riskEvaluationService.EvaluateRiskRank(answerEntity);
+                riskAnswerEntity.Questions = questions;
+                
+                RiskEvaluationService riskService = new RiskEvaluationService();
+                riskService.EvaluateRiskRank(riskAnswerEntity);
 
                 
                 //TODO 暫時轉的View
@@ -86,6 +113,10 @@ namespace ThinkPower.LabB3.Web.Controllers
         [HttpGet]
         public ActionResult EvaQuest(EvaluationRankActionModel actionMode)
         {
+            if (actionMode == null)
+            {
+                throw new ArgumentNullException(nameof(actionMode));
+            }
             try
             {
                 RiskEvaluationService riskService = new RiskEvaluationService();
@@ -94,9 +125,6 @@ namespace ThinkPower.LabB3.Web.Controllers
                 {
                     TesteeSource = actionMode.TesteeSource
                 };
-                
-                
-                
                 return View(viewModel);
             }
             catch (Exception ex)

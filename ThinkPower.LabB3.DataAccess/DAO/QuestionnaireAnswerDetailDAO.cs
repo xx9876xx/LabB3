@@ -45,43 +45,57 @@ namespace ThinkPower.LabB3.DataAccess.DAO
 
 
         /// <summary>
-        /// 查詢指定的題目之選項定義集合
+        /// 儲存問卷答題明細資料
         /// </summary>
-        /// <param name="questionUid">問題識別項</param>
-        /// <returns> 單題題目選項定義集合 </returns>
-        public bool SetQuestionnaireData(QuestionnaireAnswerDO questionnaireData)
+        /// <param name="answerDetail"> 問卷答題明細DO </param>
+        public void Insert(QuestionnaireAnswerDetailDO answerDetail)
         {
             try
             {
-                using (SqlConnection cn = GetConnection())
+                using (SqlConnection cn = DbConnection)
                 {
                     SqlCommand cmd = new SqlCommand
-                        ("INSERT INTO QuestionnaireAnswer" +
-                        "([Uid],[QuestUid],[QuestAnswerId],[TesteeId],[QuestScore]," +
-                        "[ActualScore],[TesteeSource],[CreateUserId],[CreateTime])" +
-                        "VALUES (@Uid,@QuestUid,@QuestAnswerId,@TesteeId," +
-                        "@QuestScore,@ActualScore,@TesteeSource,@CreateUserId,@CreateTime);", cn);
+                        ("INSERT INTO QuestionnaireAnswerDetail" +
+                        "([Uid],[AnswerUid],[QuestionUid],[AnswerCode],[OtherAnswer]," +
+                        "[Score],[CreateUserId],[CreateTime])" +
+                        "VALUES (@Uid,@AnswerUid,@QuestionUid,@AnswerCode," +
+                        "@OtherAnswer,@Score,@CreateUserId,@CreateTime);", cn);
+                    //TODO 要明確指定DB型別
+                    //TODO DataAccece資料進來或出去要有檢核方法
+                    //TODO (object)??DBNull.value
+                    //TODO 檢核方法為資料本身是否null,長度多少,是否為Guid,是否非數字之類的
+                    cmd.Parameters.Add("@Uid", SqlDbType.UniqueIdentifier);
+                    cmd.Parameters["@Uid"].Value = Guid.NewGuid();
 
-                    cmd.Parameters.AddWithValue("@Uid", questionnaireData.Uid);
-                    cmd.Parameters.AddWithValue("@QuestUid", questionnaireData.QuestUid);
-                    cmd.Parameters.AddWithValue("@QuestAnswerId", questionnaireData.QuestAnswerId);
-                    cmd.Parameters.AddWithValue("@TesteeId", questionnaireData.TesteeId);
-                    cmd.Parameters.AddWithValue("@QuestScore", questionnaireData.QuestScore);
-                    cmd.Parameters.AddWithValue("@ActualScore", questionnaireData.ActualScore);
-                    cmd.Parameters.AddWithValue("@TesteeSource", questionnaireData.TesteeSource);
-                    cmd.Parameters.AddWithValue("@CreateUserId", questionnaireData.CreateUserId);
-                    cmd.Parameters.AddWithValue("@CreateTime", questionnaireData.CreateTime);
+                    cmd.Parameters.Add("@AnswerUid", SqlDbType.UniqueIdentifier);
+                    cmd.Parameters["@AnswerUid"].Value = answerDetail.AnswerUid;
 
+                    cmd.Parameters.Add("@QuestionUid", SqlDbType.UniqueIdentifier);
+                    cmd.Parameters["@QuestionUid"].Value = answerDetail.QuestionUid;
+
+                    cmd.Parameters.Add("@AnswerCode", SqlDbType.NVarChar);
+                    cmd.Parameters["@AnswerCode"].Value = answerDetail.AnswerCode;
+
+                    cmd.Parameters.Add("@OtherAnswer", SqlDbType.NVarChar);
+                    cmd.Parameters["@OtherAnswer"].Value = (object)answerDetail.OtherAnswer ?? DBNull.Value;
+
+                    cmd.Parameters.Add("@Score", SqlDbType.Int);
+                    cmd.Parameters["@Score"].Value = answerDetail.Score;
+
+                    cmd.Parameters.Add("@CreateUserId", SqlDbType.NVarChar);
+                    cmd.Parameters["@CreateUserId"].Value = answerDetail.CreateUserId;
+
+                    cmd.Parameters.Add("@CreateTime", SqlDbType.DateTime);
+                    cmd.Parameters["@CreateTime"].Value = answerDetail.CreateTime;
+                                     
                     cn.Open();
                     cmd.ExecuteNonQuery();
                 }
-                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
                 ExceptionDispatchInfo.Capture(ex).Throw();
-                return false;
             }
         }
 

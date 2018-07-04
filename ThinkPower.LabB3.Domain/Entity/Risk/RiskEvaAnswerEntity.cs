@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ThinkPower.LabB3.Domain.DTO;
+using ThinkPower.LabB3.Domain.Entity.Question;
 
 namespace ThinkPower.LabB3.Domain.Entity.Risk
 {
@@ -16,6 +18,12 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
         /// </summary>
         public Guid QuestUid { get; set; }
 
+        //TODO TesteeId先寫死在這
+        /// <summary>
+        /// 填寫人員編號
+        /// </summary>
+        public string TesteeId { get { return String.Format("{0:yyyydd}", DateTime.Now); } set { TesteeId = value; } }
+
         /// <summary>
         /// 問卷填寫來源代號
         /// </summary>
@@ -24,7 +32,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
         /// <summary>
         /// 風險問卷填答結果
         /// </summary>
-        public Dictionary<string, string> AnswerItems { get; set; }
-
+        public IEnumerable<AnswerDetailEntity> Questions { get; set; }
+        
     }
 }

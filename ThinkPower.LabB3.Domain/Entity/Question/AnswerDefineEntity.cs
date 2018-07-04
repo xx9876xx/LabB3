@@ -62,7 +62,6 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// 將DO物件載入Entity物件
         /// </summary>
         /// <param name="dataObject">問卷主檔DO物件</param>
-        /// <returns>載入成功/失敗</returns>
         private void GenerateEntity(QuestionAnswerDefineDO dataObject)
         {
             Uid = dataObject.Uid;
