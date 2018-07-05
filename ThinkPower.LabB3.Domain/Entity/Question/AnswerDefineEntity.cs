@@ -8,7 +8,7 @@ using ThinkPower.LabB3.DataAccess.DO;
 namespace ThinkPower.LabB3.Domain.Entity.Question
 {
     /// <summary>
-    /// 問卷答案定義Entity類別
+    /// 填答項目定義Entity類別
     /// </summary>
     public class AnswerDefineEntity : BaseEntity
     {

@@ -16,8 +16,13 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// <summary>
         /// 儲存問卷填答主檔資料
         /// </summary>
-        public void SaveQuestionnaireAnswer()
+        public void SaveQuestionnaireAnswer(Guid QuestionUid)
         {
+            if (QuestionUid == null)
+            {
+                throw new ArgumentException(nameof(QuestionUid));
+            }
+
             QuestionnaireAnswerDetailDO questionnaireAnswerDetailDO = new QuestionnaireAnswerDetailDO
             {
                 AnswerUid = AnswerUid,
@@ -46,7 +51,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// <summary>
         /// 答案代碼
         /// </summary>
-        public string AnswerCode { get; set; }
+        public char AnswerCode { get; set; }
 
         /// <summary>
         /// 答題其他說明

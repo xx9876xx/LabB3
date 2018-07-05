@@ -10,6 +10,7 @@ using ThinkPower.LabB3.Domain.Entity.Risk;
 using System.Runtime.ExceptionServices;
 using ThinkPower.LabB3.Domain.Entity.Question;
 using ThinkPower.LabB3.Domain.DTO;
+using System.Text.RegularExpressions;
 
 namespace ThinkPower.LabB3.Web.Controllers
 {
@@ -45,55 +46,87 @@ namespace ThinkPower.LabB3.Web.Controllers
             {
                 throw new ArgumentNullException(nameof(answers));
             }
+            Regex regex = new Regex("[Q][0-9]");
             try
             {
+                RiskEvaAnswerEntity riskAnswerEntity = new RiskEvaAnswerEntity();
+                List<AnswerDetailEntity> questions = new List<AnswerDetailEntity>();
+                foreach (string ansId in answers)
+                {
+                    //為題目
+                    if (regex.IsMatch(ansId))
+                    {
+                        //非填充題
+                        if (!ansId.EndsWith("-other"))
+                        {
+                            //若集合不存在該題號物件
+                            if (!questions.Any(q => q.QuestionId == ansId))
+                            {
+                                foreach (string ansCode in answers[ansId].Split(','))
+                                {
+                                    if (ansCode.Length == 1)
+                                    {
+                                        AnswerDetailEntity question = new AnswerDetailEntity();
+                                        question.QuestionId = ansId;
+                                        question.AnswerCode = Convert.ToChar(ansCode);
+                                        questions.Add(question);
+                                    }
+                                }
+                            }
+                            //若已存在則忽略
+                            else
+                            {
+                            }
+                        }
+                        //若為填充題
+                        else
+                        {
+                            string[] array = ansId.Split('-');
+                            //若集合不存在該題號物件
+                            if (!questions.Any(q => q.QuestionId == array[0]))
+                            {
+                                AnswerDetailEntity question = new AnswerDetailEntity();
+                                question.QuestionId = array[0];
+                                if (array[1].Length == 1)
+                                {
+                                    question.AnswerCode = Convert.ToChar(array[1]);
+                                }
+                                question.OtherAnswer = answers[ansId];
+                                questions.Add(question);
+                            }
+                            //若已存在則填入其他說明即可
+                            else
+                            {
+                                foreach (var question in questions)
+                                {
+                                    if (question.QuestionId == array[0] && Convert.ToChar(question.AnswerCode) == Convert.ToChar(array[1]))
+                                    {
+                                        question.OtherAnswer = answers[ansId];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                riskAnswerEntity.Questions = questions;
+
                 //TODO UserId 屬於識別資訊，要在後端串出來，並非從前端帶，ActionMode的建構式可以被前端重整就可以重改，也不行
                 //TODO 要用Session去判斷是否為同一個UserId，也可以用儲存Cache或是存資料庫來做判別
 
-                RiskEvaAnswerEntity riskAnswerEntity = new RiskEvaAnswerEntity();
-
                 //問卷識別碼 (參考問卷主檔Uid)
-                if (answers.AllKeys.Contains("QuestUid"))
+                if (answers.AllKeys.Contains("questUid"))
                 {
-                    riskAnswerEntity.QuestUid = Guid.Parse(answers["QuestUid"]);
-                    answers.Remove("QuestUid");
+                    riskAnswerEntity.QuestUid = Guid.Parse(answers["questUid"]);
                 }
 
                 //問卷填寫來源代號 (固定為LabB3)
                 if (answers.AllKeys.Contains("TesteeSource"))
                 {
                     riskAnswerEntity.TesteeSource = answers["TesteeSource"];
-                    answers.Remove("TesteeSource");
                 }
-
-                //填答資料載入(填充題和其他說明)
-                List<AnswerDetailEntity> questions = new List<AnswerDetailEntity>();
-                foreach (string ans in answers)
-                {
-                    if (ans.Contains("-other"))
-                    {
-                        string questionId = ans.Replace("-other", "");
-                        foreach (var question in questions)
-                        {
-                            if (question.QuestionId == questionId)
-                            {
-                                question.OtherAnswer = answers[ans];
-                            }
-                        }
-                    }
-                    else
-                    {
-                        AnswerDetailEntity question = new AnswerDetailEntity();
-                        question.QuestionId = ans;
-                        question.AnswerCode = answers[ans];                        
-                        questions.Add(question);
-                    }
-                }
-                riskAnswerEntity.Questions = questions;
                 
                 RiskEvaluationService riskService = new RiskEvaluationService();
                 riskService.EvaluateRiskRank(riskAnswerEntity);
-
                 
                 //TODO 暫時轉的View
                 return RedirectToAction("AcceptRiskRank");

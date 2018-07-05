@@ -15,7 +15,6 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
     /// </summary>
     public class QuestionnaireAnswerEntity : BaseEntity
     {
-
         /// <summary>
         /// 問卷填答主檔Entity建構式
         /// </summary>

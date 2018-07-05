@@ -73,21 +73,21 @@ namespace ThinkPower.LabB3.DataAccess.DAO
                     cmd.Parameters.Add("@QuestionUid", SqlDbType.UniqueIdentifier);
                     cmd.Parameters["@QuestionUid"].Value = answerDetail.QuestionUid;
 
-                    cmd.Parameters.Add("@AnswerCode", SqlDbType.NVarChar);
+                    cmd.Parameters.Add("@AnswerCode", SqlDbType.VarChar);
                     cmd.Parameters["@AnswerCode"].Value = answerDetail.AnswerCode;
 
                     cmd.Parameters.Add("@OtherAnswer", SqlDbType.NVarChar);
-                    cmd.Parameters["@OtherAnswer"].Value = (object)answerDetail.OtherAnswer ?? DBNull.Value;
+                    cmd.Parameters["@OtherAnswer"].Value = answerDetail.OtherAnswer ?? (object)DBNull.Value;
 
                     cmd.Parameters.Add("@Score", SqlDbType.Int);
-                    cmd.Parameters["@Score"].Value = answerDetail.Score;
+                    cmd.Parameters["@Score"].Value = answerDetail.Score ?? (object)DBNull.Value;
 
-                    cmd.Parameters.Add("@CreateUserId", SqlDbType.NVarChar);
-                    cmd.Parameters["@CreateUserId"].Value = answerDetail.CreateUserId;
+                    cmd.Parameters.Add("@CreateUserId", SqlDbType.VarChar);
+                    cmd.Parameters["@CreateUserId"].Value = answerDetail.CreateUserId ?? (object)DBNull.Value;
 
                     cmd.Parameters.Add("@CreateTime", SqlDbType.DateTime);
-                    cmd.Parameters["@CreateTime"].Value = answerDetail.CreateTime;
-                                     
+                    cmd.Parameters["@CreateTime"].Value = answerDetail.CreateTime ?? (object)DBNull.Value;
+
                     cn.Open();
                     cmd.ExecuteNonQuery();
                 }

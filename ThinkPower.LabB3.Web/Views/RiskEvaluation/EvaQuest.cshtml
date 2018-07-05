@@ -35,8 +35,7 @@
                                     @foreach (var ans in quest.AnswerDefineEntities)
                                     {
                                         <li>
-                                            @Html.Hidden(quest.QuestionId, ans.AnswerCode)
-                                            @Html.TextBox(quest.QuestionId + "-other")
+                                            @Html.TextBox(quest.QuestionId+ "-" + ans.AnswerCode + "-other")
                                         </li>
                                     }
                                 </ul>
@@ -56,7 +55,7 @@
 
                                             @if (ans.HaveOtherAnswer == "Y")
                                             {
-                                                @Html.TextBox(quest.QuestionId+"-other", "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
+                                                @Html.TextBox(quest.QuestionId+"-"+ ans.AnswerCode + "-other", "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
                                             }
                                         </li>
                                     }
@@ -75,7 +74,7 @@
                                             <span>&nbsp;&nbsp;@ans.AnswerContent&nbsp;&nbsp;</span>
                                             @if (ans.HaveOtherAnswer == "Y")
                                             {
-                                                @Html.TextBox(quest.QuestionId + "-other", "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
+                                                @Html.TextBox(quest.QuestionId+ "-" + ans.AnswerCode + "-other", "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
                                             }
                                         </li>
                                     }

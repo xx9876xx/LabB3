@@ -29,7 +29,7 @@ namespace ThinkPower.LabB3.Domain.Service
             {
                 throw new ArgumentNullException(nameof(answer));
             }
-
+            //TODO 整理>>檢核>>分數計算>>存檔
             try
             {
                 //此份問卷的計分資訊
@@ -40,63 +40,32 @@ namespace ThinkPower.LabB3.Domain.Service
                 if (questionnaireEntity.NeedScore == "Y")
                 {
                     int sum = 0;
-                    switch (questionnaireEntity.ScoreKind)
+                    foreach (var question in answerResult.Questions)
                     {
-                        //加總
-                        case "1":
-                            break;
-                        //取最高
-                        case "2":
-                            break;
-                        //取最低
-                        case "3":
-                            break;
-                        //平均
-                        case "4":
-                            break;
-
+                        sum += question.Score.Value;
                     }
-                        foreach (var question in answerResult.Questions)
-                        {
-                            sum += question.Score.Value;
-                        }
-                    
-
                     //問卷得分
                     answer.ActualScore = sum;
                     //問卷總分
                     answer.QuestScore = questionnaireEntity.QuestScore;
-
-
+                    //若得分超過問卷總分，則分數為問卷總分
+                    if (answer.ActualScore > answer.QuestScore)
+                    {
+                        answer.ActualScore = answer.QuestScore;
+                    }
+                }
+                else
+                {
+                    answer.ActualScore = null;
+                    answer.QuestScore = null;
+                    //您的問卷己填答完畢，謝謝您的參與
                 }
 
-
-
-
+                answer.SaveQuestionnaireAnswer();
+                //answerDetail.SaveQuestionnaireAnswer();
                 return null;
-                //QuestionnaireEntity questionnaireEntity = GetQuestionnaire(Convert.ToString(answer.QuestUid));
-                ////填答項目集合
-                ////欲儲存的問卷填答項目Entity
-                //AnswerDetailEntity answerDetail = new AnswerDetailEntity();
-
-                ////TODO 把題目選項疊代統整成一個method
-
                 
-                //    //您的問卷己填答完畢，謝謝您的參與
-
-                //    //問卷得分
-                //    answer.ActualScore = sum;
-
-                //    if (sum > (questionnaireEntity.QuestScore == null ? throw new InvalidCastException() : Convert.ToInt32(questionnaireEntity.QuestScore)))
-                //    {
-                //        sum = Convert.ToInt32(questionnaireEntity.QuestScore);
-                //    }
-
-                //    //問卷總分
-                //    answer.QuestScore = sum;
-
-                //    answer.SaveQuestionnaireAnswer();
-                //    answerDetail.SaveQuestionnaireAnswer();
+                
 
             }
             catch (Exception ex)
@@ -121,41 +90,47 @@ namespace ThinkPower.LabB3.Domain.Service
             //針對每個填答
             foreach (var question in answer.Questions)
             {
+                //加入判斷問卷主檔Uid的where判斷
+                //take 1 用LINQ 抓第一筆
                 var AnswerDefines = from quest in questionnaireEntity.QuestDefineEntitys
-                                    where (quest.QuestionId == question.QuestionId)
-                                    select new {quest.AnswerDefineEntities};
-
+                                    where quest.QuestionId == question.QuestionId
+                                    select quest;
+                //要用First()的時候還是要注意檢查是否為null的判斷
                 //填入題目Uid
-                question.QuestionUid = AnswerDefines.First().QuestionUid;
+                question.QuestionUid = AnswerDefines.First().Uid;
 
-                string[]answers = question.AnswerCode.Split(',');
-                var scoreQuery = from ans in AnswerDefines
-                                 where (answers.Contains(ans.AnswerCode))
-                                 select new { ans.Score };
+                char answers = question.AnswerCode;
+                var scoreQuery = from ans in AnswerDefines.First().AnswerDefineEntities
+                                 where answers == Convert.ToChar(ans.AnswerCode)
+                                 select ans.Score;
+                //計分
                 if (questionnaireEntity.NeedScore == "Y")
                 {
                     switch (questionnaireEntity.ScoreKind)
                     {
                         //加總
                         case "1":
-                            question.Score = scoreQuery.Sum(e => e.Score);
+                            question.Score = scoreQuery.Sum(e => e.Value);
                             break;
                         //取最高
-                        case "2":
-                            question.Score = scoreQuery.OrderByDescending(e => e.Score).First().Score;
+                        case "2": //TODO MAX method
+                            question.Score = scoreQuery.OrderByDescending(e => e.Value).First().Value;
                             break;
                         //取最低
-                        case "3":
-                            question.Score = scoreQuery.OrderBy(e => e.Score).First().Score;
+                        case "3"://TODO min method
+                            question.Score = scoreQuery.OrderBy(e => e.Value).First().Value;
                             break;
                         //平均
                         case "4":
-                            question.Score = (int)scoreQuery.Average(e => e.Score);
+                            question.Score = (int)scoreQuery.Average(e => e.Value);
                             break;
                     }
                 }
-                
-                
+                //不計分
+                else
+                {
+                    question.Score = null;
+                }               
             }
             return answer;
         }
