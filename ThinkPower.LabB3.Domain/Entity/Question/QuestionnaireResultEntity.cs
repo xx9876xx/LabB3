@@ -35,5 +35,10 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// 問卷填寫來源代號
         /// </summary>
         public string TesteeSource { get; set; }
+
+        /// <summary>
+        /// 回傳訊息
+        /// </summary>
+        public string message { get; set; }
     }
 }

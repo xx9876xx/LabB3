@@ -33,6 +33,5 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
         /// 風險問卷填答結果
         /// </summary>
         public IEnumerable<AnswerDetailEntity> Questions { get; set; }
-        
     }
 }

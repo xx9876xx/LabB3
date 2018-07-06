@@ -10,12 +10,12 @@ using ThinkPower.LabB3.Domain.DTO;
 using ThinkPower.LabB3.Domain.Entity.Question;
 using NLog;
 using System.Runtime.ExceptionServices;
+using Newtonsoft.Json;
+using ThinkPower.LabB3.Domain.Resources;
 
 namespace ThinkPower.LabB3.Domain.Service
 {
     //TODO 補interface的公開方法
-    //TODO 計分呼叫檢核的private方法再執行計分，如果Entity有足夠資訊(先拿到檢核資訊、再做判斷),可以創一個檢核function，讓Serice呼叫檢核方法來判斷流程是否可以繼續往下走，也可以直接先在Entity收資料直接做檢核
-    //TODO 重構一下Calculate裡面的同樣方法和資料物件導向化 
     public class QuestionnaireService
     {
         /// <summary>
@@ -29,117 +29,204 @@ namespace ThinkPower.LabB3.Domain.Service
             {
                 throw new ArgumentNullException(nameof(answer));
             }
-            //TODO 整理>>檢核>>分數計算>>存檔
+
             try
             {
+                QuestionnaireResultEntity resultEntity = new QuestionnaireResultEntity();
+                
                 //此份問卷的計分資訊
                 QuestionnaireEntity questionnaireEntity = GetQuestionnaire(Convert.ToString(answer.QuestUid));
 
-                QuestionnaireAnswerEntity answerResult = SetAnswerDetail(answer, questionnaireEntity);
+                //TODO 把計分方法獨立起來 這樣可以好寫測試程式 不然測試計分還寫到DB很怪
+                QuestionnaireAnswerEntity answerResult = new QuestionnaireAnswerEntity();
+                //整理
+                answerResult = SetAnswerDetail(answer, questionnaireEntity);
+                //檢核
+                //if (!AnswerValidate(answerResult, questionnaireEntity))
+                //{
+                //    throw new ApplicationException("填答內容有誤!");
+                //}
+                //分數計算+存檔
+                //取得問卷總分
+                answer.QuestScore = questionnaireEntity.QuestScore;
 
                 if (questionnaireEntity.NeedScore == "Y")
                 {
-                    int sum = 0;
-                    foreach (var question in answerResult.Questions)
+                    switch (questionnaireEntity.ScoreKind)
                     {
-                        sum += question.Score.Value;
+                        //TODO 分數算錯 可以將對應題號之分數清單拉在switch之前共用
+                        //加總
+                        case "1":
+                            var sum = from question in answer.Questions
+                                      select question.Score;
+                            answer.ActualScore = sum.Sum(e => e.Value);
+                            break;
+                        //取最高
+                        case "2":
+                            var max = from question in answer.Questions
+                                      select question.Score;
+                            answer.ActualScore = max.Max(e => e.Value);
+                            break;
+                        //取最低
+                        case "3"://TODO min method
+                            var min = from question in answer.Questions
+                                      select question.Score;
+                            answer.ActualScore = min.Min(e => e.Value);
+                            break;
+                        //平均
+                        case "4":
+                            var avg = from question in answer.Questions
+                                      select question.Score;
+                            answer.ActualScore = Convert.ToInt32(avg.Average(e => e.Value));
+                            break;
                     }
-                    //問卷得分
-                    answer.ActualScore = sum;
-                    //問卷總分
-                    answer.QuestScore = questionnaireEntity.QuestScore;
-                    //若得分超過問卷總分，則分數為問卷總分
-                    if (answer.ActualScore > answer.QuestScore)
+                    //檢查有沒有超過問卷總分
+                    if (answer.ActualScore.Value > answer.QuestScore.Value)
                     {
                         answer.ActualScore = answer.QuestScore;
                     }
+                    //TODO 存檔拉出來統一做
+                    answer.SaveQuestionnaireAnswer();
                 }
                 else
                 {
                     answer.ActualScore = null;
-                    answer.QuestScore = null;
-                    //您的問卷己填答完畢，謝謝您的參與
+                    //TODO 存檔拉出來統一做
+                    answer.SaveQuestionnaireAnswer();
+                    resultEntity.message = "您的問卷己填答完畢，謝謝您的參與!";
+                    return resultEntity;
                 }
-
-                answer.SaveQuestionnaireAnswer();
-                //answerDetail.SaveQuestionnaireAnswer();
                 return null;
-                
-                
-
             }
             catch (Exception ex)
             {
                 ExceptionDispatchInfo.Capture(ex).Throw();
                 return null;
             }
-
-
-            
         }
-            
     
         /// <summary>
-        /// 
+        /// 整理問卷填答項目各屬性資料
         /// </summary>
         /// <param name="answer"> 填答問卷主檔Entity </param>
         /// <param name="questionnaireEntity"> 問卷計分資訊 </param>
         /// <returns></returns>
         private QuestionnaireAnswerEntity SetAnswerDetail(QuestionnaireAnswerEntity answer, QuestionnaireEntity questionnaireEntity)
         {
-            //針對每個填答
+            //針對每個選項的填答
             foreach (var question in answer.Questions)
             {
-                //加入判斷問卷主檔Uid的where判斷
-                //take 1 用LINQ 抓第一筆
-                var AnswerDefines = from quest in questionnaireEntity.QuestDefineEntitys
+                var answerDefine = (from quest in questionnaireEntity.QuestDefineEntitys
                                     where quest.QuestionId == question.QuestionId
-                                    select quest;
-                //要用First()的時候還是要注意檢查是否為null的判斷
+                                    select quest).FirstOrDefault();
                 //填入題目Uid
-                question.QuestionUid = AnswerDefines.First().Uid;
-
-                char answers = question.AnswerCode;
-                var scoreQuery = from ans in AnswerDefines.First().AnswerDefineEntities
-                                 where answers == Convert.ToChar(ans.AnswerCode)
-                                 select ans.Score;
-                //計分
-                if (questionnaireEntity.NeedScore == "Y")
+                if (answerDefine == null)
                 {
-                    switch (questionnaireEntity.ScoreKind)
-                    {
-                        //加總
-                        case "1":
-                            question.Score = scoreQuery.Sum(e => e.Value);
-                            break;
-                        //取最高
-                        case "2": //TODO MAX method
-                            question.Score = scoreQuery.OrderByDescending(e => e.Value).First().Value;
-                            break;
-                        //取最低
-                        case "3"://TODO min method
-                            question.Score = scoreQuery.OrderBy(e => e.Value).First().Value;
-                            break;
-                        //平均
-                        case "4":
-                            question.Score = (int)scoreQuery.Average(e => e.Value);
-                            break;
-                    }
+                    //題目定義不存在
+                    throw new ArgumentNullException(nameof(answerDefine));
                 }
-                //不計分
-                else
+                question.QuestionUid = answerDefine.Uid;
+                
+                var scoreQuery = (from ans in answerDefine.AnswerDefineEntities
+                                 where question.AnswerCode == ans.AnswerCode
+                                 select ans.Score).FirstOrDefault();
+                if (!scoreQuery.HasValue)
                 {
-                    question.Score = null;
-                }               
+                        //檢核 題號 不存在 選項 不存在 要能夠檢核到
+                        //TODO 直接把選項物件丟出來 在指出分數就好 還可以對選項存不存在做檢核
+                    //TODO 查一下
+                    throw new ArgumentNullException(nameof(scoreQuery));
+                }
+                //填入選項分數
+                question.Score = scoreQuery.HasValue ? question.Score = scoreQuery.Value : null;
             }
             return answer;
         }
 
         /// <summary>
-        /// 取得有效的問卷資料
+        /// 填答內容檢核
+        /// </summary>
+        /// <param name="answer"> 填答內容 </param>
+        /// <param name="questionnaireEntity"> 檢核資訊 </param>
+        /// <returns> 檢核是否通過 </returns> 
+        private bool AnswerValidate(QuestionnaireAnswerEntity answer, QuestionnaireEntity questionnaireEntity)
+        {
+            //答題類型
+            string type = "";
+            //是否必答
+            string required = "";
+            //可不做答條件
+            string allowNaCondition = "";
+            //複選最少答項數
+            int? minMultipleAnswers = 0;
+            //複選最多答項數
+            int? maxMultipleAnswers = 0;
+            //複選限制單一做答條件
+            string singleAnswerCondition = "";
+            //答題說明是否必填
+            string otherRequired = "";
+            //檢核訊息
+            string message = "";
+
+            foreach (var question in answer.Questions)
+            {
+                var questValidate = from quest in questionnaireEntity.QuestDefineEntitys
+                                    where quest.Uid == question.QuestionUid
+                                    select new
+                                    {
+                                        quest.AnswerType,
+                                        quest.NeedAnswer,
+                                        quest.AllowNaCondition,
+                                        quest.MinMultipleAnswers,
+                                        quest.MaxMultipleAnswers,
+                                        quest.SingleAnswerCondition,
+                                        quest.AnswerDefineEntities
+                                    };
+                if (questValidate.FirstOrDefault() == null)
+                {
+                    throw new ApplicationException("資料庫無「" + nameof(question.AnswerUid) + "」題目之檢核資料");
+                }
+                else
+                {
+                    var v = questValidate.First();
+                    type = v.AnswerType;
+                    required = v.NeedAnswer;
+                    allowNaCondition = v.AllowNaCondition;
+                    minMultipleAnswers = v.MinMultipleAnswers;
+                    maxMultipleAnswers = v.MaxMultipleAnswers;
+                    singleAnswerCondition = v.SingleAnswerCondition;
+                    //TODO otherRequired
+                }
+                //TODO 針對每一題 取得檢核資訊 在針對每個檢核項目去瀏覽我載入的相關題號 選項 之狀態來判斷是否通過檢核
+                //TODO 可以有一個檢核集合來放置題號與檢核訊息 直接回傳到前端載入
+                //必填檢核
+                if (required == "Y")
+                {
+                    
+                    if (String.IsNullOrEmpty(allowNaCondition))
+                    {
+                        message = "此題必須填答!";
+                        return false;
+                    }
+                    //存在可不做答條件
+                    else
+                    {
+                        Conditions conditions = JsonConvert.DeserializeObject<Conditions>(allowNaCondition);
+                        //conditions.QuestionId;
+
+                    }
+
+
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 指定問卷編號取得有效的問卷資料
         /// </summary>
         /// <param name="id">問卷編號</param>
-        /// <returns></returns>
+        /// <returns> 問卷資料物件 </returns>
         public QuestionnaireEntity GetActiveQuestionnaire(string id)
         {
             if (id == null)
@@ -161,10 +248,10 @@ namespace ThinkPower.LabB3.Domain.Service
         }
 
         /// <summary>
-        /// 取得問卷資料
+        /// 指定問卷識別碼取得問卷資料
         /// </summary>
         /// <param name="uid">問卷識別碼</param>
-        /// <returns></returns>
+        /// <returns> 問建資料物件 </returns>
         public QuestionnaireEntity GetQuestionnaire(string uid)
         {
             if (uid == null)

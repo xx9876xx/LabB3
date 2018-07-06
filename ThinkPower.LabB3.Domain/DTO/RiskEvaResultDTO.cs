@@ -11,5 +11,9 @@ namespace ThinkPower.LabB3.Domain.DTO
     /// </summary>
     public class RiskEvaResultDTO
     {
+        /// <summary>
+        /// 回傳訊息
+        /// </summary>
+        public string message { get; set; }
     }
 }

@@ -26,12 +26,12 @@ namespace ThinkPower.LabB3.Web.Controllers
         {
             try
             {
-                return View();
+                return RedirectToAction("About", "Home", actionModel);
             }
             catch (Exception ex)
             {
                 ExceptionDispatchInfo.Capture(ex).Throw();
-                return null;
+                return RedirectToAction("About", "Home", actionModel);
             }
         }
         /// <summary>
@@ -39,6 +39,8 @@ namespace ThinkPower.LabB3.Web.Controllers
         /// </summary>
         /// <param name="answers">投資風險評估問卷填答資料</param>
         /// <returns></returns>
+        //TODO UserId 屬於識別資訊，要在後端串出來，並非從前端帶，ActionMode的建構式可以被前端重整就可以重改，也不行
+        //TODO 要用Session去判斷是否為同一個UserId，也可以用儲存Cache或是存資料庫來做判別
         [HttpPost]
         public ActionResult EvaluationRank(FormCollection answers)
         {
@@ -46,77 +48,72 @@ namespace ThinkPower.LabB3.Web.Controllers
             {
                 throw new ArgumentNullException(nameof(answers));
             }
-            Regex regex = new Regex("[Q][0-9]");
+            
             try
             {
                 RiskEvaAnswerEntity riskAnswerEntity = new RiskEvaAnswerEntity();
                 List<AnswerDetailEntity> questions = new List<AnswerDetailEntity>();
-                foreach (string ansId in answers)
+                foreach (string name in answers)
                 {
-                    //為題目
-                    if (regex.IsMatch(ansId))
+                    //題目name => "Question-Q001" or "Question-Q1"
+                    if (name.StartsWith("Question") && !name.EndsWith("-other"))
                     {
-                        //非填充題
-                        if (!ansId.EndsWith("-other"))
+                        string questId = name.Split('-')[1];
+                        string[] ansCode = answers[name].Split(',');
+                        //找到有相同題號與選項的填答物件
+                        foreach (var ans in ansCode)
                         {
-                            //若集合不存在該題號物件
-                            if (!questions.Any(q => q.QuestionId == ansId))
+                            var question = (from quest in questions
+                                            where (quest.QuestionId == questId) && (quest.AnswerCode == ans)
+                                            select quest).FirstOrDefault();
+                            //若物件不存在
+                            if (question == null)
                             {
-                                foreach (string ansCode in answers[ansId].Split(','))
-                                {
-                                    if (ansCode.Length == 1)
-                                    {
-                                        AnswerDetailEntity question = new AnswerDetailEntity();
-                                        question.QuestionId = ansId;
-                                        question.AnswerCode = Convert.ToChar(ansCode);
-                                        questions.Add(question);
-                                    }
-                                }
+                                AnswerDetailEntity questionNew = new AnswerDetailEntity();
+                                questionNew.QuestionId = questId;
+                                questionNew.AnswerCode = ans;
+                                questionNew.OtherAnswer = "";
+                                questions.Add(questionNew);
                             }
-                            //若已存在則忽略
+                            //若物件存在不須動作
                             else
                             {
                             }
                         }
-                        //若為填充題
+                        
+                    }
+                    //填充題name => "Question-Q1-E-other"
+                    else if(name.StartsWith("Question") && name.EndsWith("-other"))
+                    {
+                        string questId = name.Split('-')[1];
+                        string ansCode = name.Split('-')[2];
+                        string otherAnswer = answers[name];
+                        //找到有相同題號與選項的填答物件
+                        var question = (from quest in questions
+                                        where (quest.QuestionId == questId) && (quest.AnswerCode == ansCode)
+                                        select quest).FirstOrDefault();
+                        //若物件不存在
+                        if (question == null)
+                        {
+                            AnswerDetailEntity questionNew = new AnswerDetailEntity();
+                            questionNew.QuestionId = questId;
+                            questionNew.AnswerCode = ansCode;
+                            questionNew.OtherAnswer = otherAnswer;
+                            questions.Add(questionNew);
+                        }
+                        //若物件存在
                         else
                         {
-                            string[] array = ansId.Split('-');
-                            //若集合不存在該題號物件
-                            if (!questions.Any(q => q.QuestionId == array[0]))
-                            {
-                                AnswerDetailEntity question = new AnswerDetailEntity();
-                                question.QuestionId = array[0];
-                                if (array[1].Length == 1)
-                                {
-                                    question.AnswerCode = Convert.ToChar(array[1]);
-                                }
-                                question.OtherAnswer = answers[ansId];
-                                questions.Add(question);
-                            }
-                            //若已存在則填入其他說明即可
-                            else
-                            {
-                                foreach (var question in questions)
-                                {
-                                    if (question.QuestionId == array[0] && Convert.ToChar(question.AnswerCode) == Convert.ToChar(array[1]))
-                                    {
-                                        question.OtherAnswer = answers[ansId];
-                                    }
-                                }
-                            }
+                            question.OtherAnswer = otherAnswer;
                         }
-                    }
+                    } 
                 }
                 riskAnswerEntity.Questions = questions;
-
-                //TODO UserId 屬於識別資訊，要在後端串出來，並非從前端帶，ActionMode的建構式可以被前端重整就可以重改，也不行
-                //TODO 要用Session去判斷是否為同一個UserId，也可以用儲存Cache或是存資料庫來做判別
-
+                
                 //問卷識別碼 (參考問卷主檔Uid)
-                if (answers.AllKeys.Contains("questUid"))
+                if (answers.AllKeys.Contains("QuestUid"))
                 {
-                    riskAnswerEntity.QuestUid = Guid.Parse(answers["questUid"]);
+                    riskAnswerEntity.QuestUid = Guid.Parse(answers["QuestUid"]);
                 }
 
                 //問卷填寫來源代號 (固定為LabB3)
@@ -126,11 +123,10 @@ namespace ThinkPower.LabB3.Web.Controllers
                 }
                 
                 RiskEvaluationService riskService = new RiskEvaluationService();
+
                 riskService.EvaluateRiskRank(riskAnswerEntity);
-                
-                //TODO 暫時轉的View
-                return RedirectToAction("AcceptRiskRank");
-                //return View();
+                SaveRankActionModel result = new SaveRankActionModel();
+                return RedirectToAction("AcceptRiskRank", "RiskEvaluation");
             }
             catch (Exception ex)
             {

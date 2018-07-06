@@ -26,7 +26,7 @@ namespace ThinkPower.LabB3.DataAccess.DO
         /// <summary>
         /// 答案代碼
         /// </summary>
-        public char AnswerCode { get; set; }
+        public string AnswerCode { get; set; }
         /// <summary>
         /// 答題其他說明
         /// </summary>

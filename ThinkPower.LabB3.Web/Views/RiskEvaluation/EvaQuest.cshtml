@@ -35,7 +35,7 @@
                                     @foreach (var ans in quest.AnswerDefineEntities)
                                     {
                                         <li>
-                                            @Html.TextBox(quest.QuestionId+ "-" + ans.AnswerCode + "-other")
+                                            @Html.TextBox("Question-" + quest.QuestionId+ "-" + ans.AnswerCode + "-other")
                                         </li>
                                     }
                                 </ul>
@@ -50,12 +50,12 @@
                                     @foreach (var ans in quest.AnswerDefineEntities)
                                     {
                                         <li>
-                                            @Html.RadioButton(quest.QuestionId, ans.AnswerCode, new { value = @ans.AnswerCode, data_have_other_answer = ans.HaveOtherAnswer })
+                                            @Html.RadioButton("Question-" + quest.QuestionId, ans.AnswerCode, new { value = @ans.AnswerCode, data_have_other_answer = ans.HaveOtherAnswer })
                                             <span>&nbsp;&nbsp;@ans.AnswerContent&nbsp;&nbsp;</span>
 
                                             @if (ans.HaveOtherAnswer == "Y")
                                             {
-                                                @Html.TextBox(quest.QuestionId+"-"+ ans.AnswerCode + "-other", "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
+                                                @Html.TextBox("Question-" + quest.QuestionId+"-"+ ans.AnswerCode + "-other", "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
                                             }
                                         </li>
                                     }
@@ -70,11 +70,11 @@
                                     @foreach (var ans in quest.AnswerDefineEntities)
                                     {
                                         <li>
-                                            <input id="@quest.QuestionId" name="@quest.QuestionId" type="checkbox" data-have-other-answer="@ans.HaveOtherAnswer" value="@ans.AnswerCode">
+                                            <input id="@quest.QuestionId" name="Question-@quest.QuestionId" type="checkbox" data-have-other-answer="@ans.HaveOtherAnswer" value="@ans.AnswerCode">
                                             <span>&nbsp;&nbsp;@ans.AnswerContent&nbsp;&nbsp;</span>
                                             @if (ans.HaveOtherAnswer == "Y")
                                             {
-                                                @Html.TextBox(quest.QuestionId+ "-" + ans.AnswerCode + "-other", "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
+                                                @Html.TextBox("Question-" + quest.QuestionId+ "-" + ans.AnswerCode + "-other", "", new { data_need_other_answer = ans.NeedOtherAnswer, data_answer_code = ans.AnswerCode })
                                             }
                                         </li>
                                     }

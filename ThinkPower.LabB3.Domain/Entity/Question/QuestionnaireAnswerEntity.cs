@@ -16,6 +16,10 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
     public class QuestionnaireAnswerEntity : BaseEntity
     {
         /// <summary>
+        /// 原生建構式
+        /// </summary>
+        public QuestionnaireAnswerEntity() { }
+        /// <summary>
         /// 問卷填答主檔Entity建構式
         /// </summary>
         /// <param name="riskAnswerEntity">投資風險評估填答明細Entity類別</param>
@@ -54,7 +58,12 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
             };
 
             QuestionnaireAnswerDAO questionnaireAnswerDAO = new QuestionnaireAnswerDAO();
-            questionnaireAnswerDAO.Insert(questionnaireAnswerDO);
+            string answerUid = questionnaireAnswerDAO.Insert(questionnaireAnswerDO);
+
+            foreach (var answerDetail in Questions)
+            {
+                answerDetail.SaveQuestionnaireAnswer(Guid.Parse(answerUid), CreateUserId);
+            }
         }
 
         /// <summary>

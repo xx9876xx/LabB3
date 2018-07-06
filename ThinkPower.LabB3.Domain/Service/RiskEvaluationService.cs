@@ -23,8 +23,9 @@ namespace ThinkPower.LabB3.Domain.Service
         {
             QuestionnaireAnswerEntity questionnaireAnswerEntity = new QuestionnaireAnswerEntity(answer);
             QuestionnaireService questService = new QuestionnaireService();
-            questService.Calculate(questionnaireAnswerEntity);
 
+            RiskEvaResultDTO riskEvaResultDTO = new RiskEvaResultDTO();
+            questService.Calculate(questionnaireAnswerEntity);
             return null;
         }
         /// <summary>

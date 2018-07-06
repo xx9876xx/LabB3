@@ -9,19 +9,22 @@ using ThinkPower.LabB3.DataAccess.DO;
 namespace ThinkPower.LabB3.Domain.Entity.Question
 {
     /// <summary>
-    /// 問卷題目填答Entity類別
+    /// 填答題目選項Entity類別
     /// </summary>
     public class AnswerDetailEntity : BaseEntity
     {
         /// <summary>
         /// 儲存問卷填答主檔資料
         /// </summary>
-        public void SaveQuestionnaireAnswer(Guid QuestionUid)
+        //TODO 把該存檔方法移至問卷填答主檔才不會造成重複產生DAO對資料庫過多連線
+        //TODO 要把detail的DAO 載入集合 一次處理存檔 才不會過多連線
+        public void SaveQuestionnaireAnswer(Guid AnswerUid, string CreateUserId)
         {
-            if (QuestionUid == null)
+            if (AnswerUid == null)
             {
-                throw new ArgumentException(nameof(QuestionUid));
+                throw new ArgumentException(nameof(AnswerUid));
             }
+            
 
             QuestionnaireAnswerDetailDO questionnaireAnswerDetailDO = new QuestionnaireAnswerDetailDO
             {
@@ -31,8 +34,8 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
                 OtherAnswer = OtherAnswer,
                 Score = Score,
                 CreateUserId = CreateUserId,
-                CreateTime = CreateTime
-            };
+                CreateTime = DateTime.Now
+        };
 
             QuestionnaireAnswerDetailDAO questionnaireAnswerDetailDAO = new QuestionnaireAnswerDetailDAO();
             questionnaireAnswerDetailDAO.Insert(questionnaireAnswerDetailDO);
@@ -51,7 +54,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// <summary>
         /// 答案代碼
         /// </summary>
-        public char AnswerCode { get; set; }
+        public string AnswerCode { get; set; }
 
         /// <summary>
         /// 答題其他說明

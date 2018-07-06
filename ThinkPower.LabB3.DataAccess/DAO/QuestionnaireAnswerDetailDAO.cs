@@ -48,12 +48,14 @@ namespace ThinkPower.LabB3.DataAccess.DAO
         /// 儲存問卷答題明細資料
         /// </summary>
         /// <param name="answerDetail"> 問卷答題明細DO </param>
+        //TODO 載入清單一次連線批次存檔  一筆失敗要全部還原 要設交易(Transation最後做)
         public void Insert(QuestionnaireAnswerDetailDO answerDetail)
         {
             try
             {
                 using (SqlConnection cn = DbConnection)
                 {
+                    //TODO 時間建立要統一放在邏輯層或資料存取層 因為這兩隻程式未必會是放在同一台主機運行
                     SqlCommand cmd = new SqlCommand
                         ("INSERT INTO QuestionnaireAnswerDetail" +
                         "([Uid],[AnswerUid],[QuestionUid],[AnswerCode],[OtherAnswer]," +

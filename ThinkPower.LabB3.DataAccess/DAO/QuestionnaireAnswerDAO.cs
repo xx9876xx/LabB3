@@ -47,10 +47,14 @@ namespace ThinkPower.LabB3.DataAccess.DAO
         /// 儲存問卷答題主檔資料
         /// </summary>
         /// <param name="answer"> 問卷答題主檔DO </param>
-        public void Insert(QuestionnaireAnswerDO answer)
+        /// <returns> 問卷填答主檔Uid </returns>
+        public string Insert(QuestionnaireAnswerDO answer)
         {
             try
             {
+                //問卷答題主檔Uid
+                Guid answerUid = Guid.NewGuid();
+
                 using (SqlConnection cn = DbConnection)
                 {
                     SqlCommand cmd = new SqlCommand
@@ -60,8 +64,9 @@ namespace ThinkPower.LabB3.DataAccess.DAO
                         "VALUES (@Uid,@QuestUid,@QuestAnswerId,@TesteeId," +
                         "@QuestScore,@ActualScore,@TesteeSource,@CreateUserId,@CreateTime);", cn);
                     //TODO 要小心DB的個別資料檢核 也可以再service直接先做檢核
+                    
                     cmd.Parameters.Add("@Uid", SqlDbType.UniqueIdentifier);
-                    cmd.Parameters["@Uid"].Value = Guid.NewGuid();
+                    cmd.Parameters["@Uid"].Value = answerUid;
 
                     cmd.Parameters.Add("@QuestUid", SqlDbType.UniqueIdentifier);
                     cmd.Parameters["@QuestUid"].Value = answer.QuestUid;
@@ -89,12 +94,15 @@ namespace ThinkPower.LabB3.DataAccess.DAO
 
                     cn.Open();
                     cmd.ExecuteNonQuery();
+                    
                 }
+                return answerUid.ToString();
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
                 ExceptionDispatchInfo.Capture(ex).Throw();
+                return null;
             }
         }
 
