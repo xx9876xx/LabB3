@@ -23,10 +23,15 @@ namespace ThinkPower.LabB3.Domain.Service
         {
             QuestionnaireAnswerEntity questionnaireAnswerEntity = new QuestionnaireAnswerEntity(answer);
             QuestionnaireService questService = new QuestionnaireService();
+            QuestionnaireResultEntity questionnaireResultEntity = questService.Calculate(questionnaireAnswerEntity);
 
-            RiskEvaResultDTO riskEvaResultDTO = new RiskEvaResultDTO();
-            questService.Calculate(questionnaireAnswerEntity);
-            return null;
+
+            RiskEvaResultDTO riskEvaResultDTO = new RiskEvaResultDTO()
+            {
+               ViewMessage = questionnaireResultEntity.ViewMessage
+            };
+            
+            return riskEvaResultDTO;
         }
         /// <summary>
         /// 依紀錄識別碼取得風險評估資料

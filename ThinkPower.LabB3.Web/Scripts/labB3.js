@@ -5,6 +5,17 @@
     
 });
 
+/**確認事件紐 */
+function SubmitClick() {
+
+    if (validate()) {
+        let url = '/RiskEvaluation/EvaluationRank';    //新網址
+        $("#questForm").attr('method', "post");    //設定
+        $("#questForm").attr('action', url);
+        $("#questForm").submit();    //轉址
+    }
+}
+
 //問卷檢核
 function validate() {
 
@@ -207,18 +218,6 @@ function addValidateText(ele, check, type, n) {
         $(validationId).css("display", "inline");
         $(validationId).append(message);
         $(validationId).show();
-    }
-}
-
-/**確認事件紐 */
-function SubmitClick() {
-
-    if (validate())
-    {
-        let url = '/RiskEvaluation/EvaluationRank';    //新網址
-        $("#questForm").attr('method', "post");    //設定
-        $("#questForm").attr('action', url);
-        $("#questForm").submit();    //轉址
     }
 }
 

@@ -57,13 +57,18 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
                 CreateTime = CreateTime
             };
 
+            //儲存問卷主檔
             QuestionnaireAnswerDAO questionnaireAnswerDAO = new QuestionnaireAnswerDAO();
             string answerUid = questionnaireAnswerDAO.Insert(questionnaireAnswerDO);
 
+            List<QuestionnaireAnswerDetailDO> answerDetails = new List<QuestionnaireAnswerDetailDO>();
             foreach (var answerDetail in Questions)
             {
-                answerDetail.SaveQuestionnaireAnswer(Guid.Parse(answerUid), CreateUserId);
+                answerDetails.Add(answerDetail.SaveQuestionnaireAnswer(Guid.Parse(answerUid), CreateUserId));
             }
+            //儲存答題明細集合
+            QuestionnaireAnswerDetailDAO questionnaireAnswerDetailDAO = new QuestionnaireAnswerDetailDAO();
+            questionnaireAnswerDetailDAO.Insert(answerDetails);
         }
 
         /// <summary>
@@ -100,5 +105,10 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// 風險問卷填答結果
         /// </summary>
         public IEnumerable<AnswerDetailEntity> Questions { get; set; }
+
+        /// <summary>
+        /// 回傳畫面訊息
+        /// </summary>
+        public string ViewMessage { get; set; }
     }
 }

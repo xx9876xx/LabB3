@@ -60,6 +60,7 @@
     <Compile Include="DTO\RiskEvaResultDTO.cs" />
     <Compile Include="DTO\riskRankKindDTO.cs" />
     <Compile Include="Entity\BaseEntity.cs" />
+    <Compile Include="Service\Json\Condition.cs" />
     <Compile Include="Entity\Question\AnswerDefineEntity.cs" />
     <Compile Include="Entity\Question\AnswerDetailEntity.cs" />
     <Compile Include="Entity\Question\QuestDefineEntity.cs" />
@@ -72,11 +73,12 @@
     <Compile Include="Entity\Risk\RiskEvaResultEntity.cs" />
     <Compile Include="Entity\Risk\RiskRankEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\Conditions.cs" />
+    <Compile Include="Service\Json\Rule.cs" />
     <Compile Include="Service\QuestionnaireService.cs" />
     <Compile Include="Service\RiskEvaluationService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Resources\" />
     <Folder Include="Service\interface\" />
   </ItemGroup>
   <ItemGroup>

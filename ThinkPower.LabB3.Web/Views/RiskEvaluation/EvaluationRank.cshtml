@@ -1,0 +1,69 @@
+﻿<div>
+    @using (Html.BeginForm("", "", FormMethod.Post, htmlAttributes: new { @class = "", id = "" }))
+    {
+        <div>
+            <h2 class="text-center">投資風險承受度評估表(僅供參考)</h2>
+        </div>
+        <div id="risk-table">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                        </th>
+                        <th>
+                            <span class="h2">□</span><span>11分以下</span>
+                        </th>
+                        <th>
+                            <span class="h2">□</span><span>12~14分以下</span>
+                        </th>
+                        <th>
+                            <span class="h2">□</span><span>15分(含)以上</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            投資屬性
+                        </td>
+                        <td>
+                            低(保守)
+                        </td>
+                        <td>
+                            中(穩健)
+                        </td>
+                        <td>
+                            高(成長)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            可選擇投資標的風險收益等級
+                        </td>
+                        <td>
+                            RR1、RR2
+                        </td>
+                        <td>
+                            RR1、RR2、RR3
+                        </td>
+                        <td>
+                            RR1、RR2、RR3、RR4、RR5
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            ◎可選擇之投資標的與風險收益等級請參見商品說明書。<br />
+                            ◎若投資人拒絕提供前述資訊或合計總分與所選擇之投資標的風險收益等級不一致者，本公司將不予變更。
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <input id="Button1" type="button" value="確定" class="btn-info" />&nbsp;
+            <input id="Button1" type="button" value="重新評估" class="btn-info" />
+        </div>
+    }
+
+</div>
+

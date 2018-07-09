@@ -58,7 +58,7 @@ namespace ThinkPower.LabB3.DataAccess.DAO
             try
             {
                 QuestionnaireDO questionnaireDO = new QuestionnaireDO();
-                using (SqlConnection cn = GetConnection())
+                using (SqlConnection cn = DbConnection)
                 {
                     SqlCommand cmd = new SqlCommand
                         ("SELECT TOP 1 [Uid],[QuestId],[Version],[Kind],[Name],[Memo],[Ondate],[Offdate]," +

@@ -123,10 +123,9 @@ namespace ThinkPower.LabB3.Web.Controllers
                 }
                 
                 RiskEvaluationService riskService = new RiskEvaluationService();
-
                 riskService.EvaluateRiskRank(riskAnswerEntity);
-                SaveRankActionModel result = new SaveRankActionModel();
-                return RedirectToAction("AcceptRiskRank", "RiskEvaluation");
+
+                return View();
             }
             catch (Exception ex)
             {

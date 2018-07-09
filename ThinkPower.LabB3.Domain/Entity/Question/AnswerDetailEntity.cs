@@ -16,15 +16,17 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// <summary>
         /// 儲存問卷填答主檔資料
         /// </summary>
-        //TODO 把該存檔方法移至問卷填答主檔才不會造成重複產生DAO對資料庫過多連線
-        //TODO 要把detail的DAO 載入集合 一次處理存檔 才不會過多連線
-        public void SaveQuestionnaireAnswer(Guid AnswerUid, string CreateUserId)
+        public QuestionnaireAnswerDetailDO SaveQuestionnaireAnswer(Guid AnswerUid, string CreateUserId)
         {
             if (AnswerUid == null)
             {
                 throw new ArgumentException(nameof(AnswerUid));
             }
-            
+
+            if (CreateUserId == null)
+            {
+                throw new ArgumentException(nameof(CreateUserId));
+            }
 
             QuestionnaireAnswerDetailDO questionnaireAnswerDetailDO = new QuestionnaireAnswerDetailDO
             {
@@ -35,10 +37,9 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
                 Score = Score,
                 CreateUserId = CreateUserId,
                 CreateTime = DateTime.Now
-        };
+            };
 
-            QuestionnaireAnswerDetailDAO questionnaireAnswerDetailDAO = new QuestionnaireAnswerDetailDAO();
-            questionnaireAnswerDetailDAO.Insert(questionnaireAnswerDetailDO);
+            return questionnaireAnswerDetailDO;
         }
 
         /// <summary>

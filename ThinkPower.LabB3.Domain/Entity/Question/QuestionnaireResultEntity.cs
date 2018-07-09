@@ -16,7 +16,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// </summary>
         public Guid QuestUid { get; set; }
         /// <summary>
-        /// 問卷答題編號
+        /// 問卷答題編號(依目前西元年月日(6)+時分秒(6)+隨機數(3)編碼)
         /// </summary>
         public string QuestAnswerId { get; set; }
         /// <summary>
@@ -26,19 +26,14 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// <summary>
         /// 問卷總分
         /// </summary>
-        public int QuestScore { get; set; }
+        public int? QuestScore { get; set; }
         /// <summary>
         /// 問卷得分
         /// </summary>
-        public int ActualScore { get; set; }
+        public int? ActualScore { get; set; }
         /// <summary>
-        /// 問卷填寫來源代號
+        /// 回傳畫面訊息
         /// </summary>
-        public string TesteeSource { get; set; }
-
-        /// <summary>
-        /// 回傳訊息
-        /// </summary>
-        public string message { get; set; }
+        public string ViewMessage { get; set; }
     }
 }

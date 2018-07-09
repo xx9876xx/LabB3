@@ -63,7 +63,6 @@ namespace ThinkPower.LabB3.DataAccess.DAO
                         "[ActualScore],[TesteeSource],[CreateUserId],[CreateTime])" +
                         "VALUES (@Uid,@QuestUid,@QuestAnswerId,@TesteeId," +
                         "@QuestScore,@ActualScore,@TesteeSource,@CreateUserId,@CreateTime);", cn);
-                    //TODO 要小心DB的個別資料檢核 也可以再service直接先做檢核
                     
                     cmd.Parameters.Add("@Uid", SqlDbType.UniqueIdentifier);
                     cmd.Parameters["@Uid"].Value = answerUid;

@@ -45,53 +45,55 @@ namespace ThinkPower.LabB3.DataAccess.DAO
 
 
         /// <summary>
-        /// 儲存問卷答題明細資料
+        /// 將問卷答題明細集合資料做儲存
         /// </summary>
-        /// <param name="answerDetail"> 問卷答題明細DO </param>
+        /// <param name="answerDetails"> 問卷答題明細DO集合 </param>
         //TODO 載入清單一次連線批次存檔  一筆失敗要全部還原 要設交易(Transation最後做)
-        public void Insert(QuestionnaireAnswerDetailDO answerDetail)
+        //TODO 檢核方法為資料本身是否null,長度多少,是否為Guid,是否非數字之類的
+        //TODO 時間建立要統一放在邏輯層或資料存取層 因為這兩隻程式未必會是放在同一台主機運行
+        public void Insert(IEnumerable<QuestionnaireAnswerDetailDO> answerDetails)
         {
             try
             {
                 using (SqlConnection cn = DbConnection)
-                {
-                    //TODO 時間建立要統一放在邏輯層或資料存取層 因為這兩隻程式未必會是放在同一台主機運行
-                    SqlCommand cmd = new SqlCommand
+                {                    
+                    foreach (var answerDetail in answerDetails)
+                    {
+                        SqlCommand cmd = new SqlCommand
                         ("INSERT INTO QuestionnaireAnswerDetail" +
                         "([Uid],[AnswerUid],[QuestionUid],[AnswerCode],[OtherAnswer]," +
                         "[Score],[CreateUserId],[CreateTime])" +
                         "VALUES (@Uid,@AnswerUid,@QuestionUid,@AnswerCode," +
                         "@OtherAnswer,@Score,@CreateUserId,@CreateTime);", cn);
-                    //TODO 要明確指定DB型別
-                    //TODO DataAccece資料進來或出去要有檢核方法
-                    //TODO (object)??DBNull.value
-                    //TODO 檢核方法為資料本身是否null,長度多少,是否為Guid,是否非數字之類的
-                    cmd.Parameters.Add("@Uid", SqlDbType.UniqueIdentifier);
-                    cmd.Parameters["@Uid"].Value = Guid.NewGuid();
+                        
+                        cmd.Parameters.Add("@Uid", SqlDbType.UniqueIdentifier);
+                        cmd.Parameters["@Uid"].Value = Guid.NewGuid();
 
-                    cmd.Parameters.Add("@AnswerUid", SqlDbType.UniqueIdentifier);
-                    cmd.Parameters["@AnswerUid"].Value = answerDetail.AnswerUid;
+                        cmd.Parameters.Add("@AnswerUid", SqlDbType.UniqueIdentifier);
+                        cmd.Parameters["@AnswerUid"].Value = answerDetail.AnswerUid;
 
-                    cmd.Parameters.Add("@QuestionUid", SqlDbType.UniqueIdentifier);
-                    cmd.Parameters["@QuestionUid"].Value = answerDetail.QuestionUid;
+                        cmd.Parameters.Add("@QuestionUid", SqlDbType.UniqueIdentifier);
+                        cmd.Parameters["@QuestionUid"].Value = answerDetail.QuestionUid;
 
-                    cmd.Parameters.Add("@AnswerCode", SqlDbType.VarChar);
-                    cmd.Parameters["@AnswerCode"].Value = answerDetail.AnswerCode;
+                        cmd.Parameters.Add("@AnswerCode", SqlDbType.VarChar);
+                        cmd.Parameters["@AnswerCode"].Value = answerDetail.AnswerCode ?? (object)DBNull.Value;
 
-                    cmd.Parameters.Add("@OtherAnswer", SqlDbType.NVarChar);
-                    cmd.Parameters["@OtherAnswer"].Value = answerDetail.OtherAnswer ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@OtherAnswer", SqlDbType.NVarChar);
+                        cmd.Parameters["@OtherAnswer"].Value = answerDetail.OtherAnswer ?? (object)DBNull.Value;
 
-                    cmd.Parameters.Add("@Score", SqlDbType.Int);
-                    cmd.Parameters["@Score"].Value = answerDetail.Score ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@Score", SqlDbType.Int);
+                        cmd.Parameters["@Score"].Value = answerDetail.Score ?? (object)DBNull.Value;
 
-                    cmd.Parameters.Add("@CreateUserId", SqlDbType.VarChar);
-                    cmd.Parameters["@CreateUserId"].Value = answerDetail.CreateUserId ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@CreateUserId", SqlDbType.VarChar);
+                        cmd.Parameters["@CreateUserId"].Value = answerDetail.CreateUserId ?? (object)DBNull.Value;
 
-                    cmd.Parameters.Add("@CreateTime", SqlDbType.DateTime);
-                    cmd.Parameters["@CreateTime"].Value = answerDetail.CreateTime ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@CreateTime", SqlDbType.DateTime);
+                        cmd.Parameters["@CreateTime"].Value = answerDetail.CreateTime ?? (object)DBNull.Value;
 
-                    cn.Open();
-                    cmd.ExecuteNonQuery();
+                        cn.Open();
+                        cmd.ExecuteNonQuery();
+                        cn.Close();
+                    }
                 }
             }
             catch (Exception ex)
