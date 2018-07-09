@@ -43,7 +43,7 @@ namespace ThinkPower.LabB3.Domain.Service
                     throw new ApplicationException("填答內容有誤!");
                 }
                 //計分
-                answerResult = CaculatePoint(answerResult ,questionnaireEntity);
+                answerResult = CaculatePoint(answerResult, questionnaireEntity);
                 //存檔
                 answerResult.SaveQuestionnaireAnswer();
                 QuestionnaireResultEntity resultEntity = new QuestionnaireResultEntity()
@@ -55,7 +55,7 @@ namespace ThinkPower.LabB3.Domain.Service
                     ActualScore = answerResult.ActualScore,
                     ViewMessage = answerResult.ViewMessage
                 };
-                
+
                 return resultEntity;
             }
             catch (Exception ex)
@@ -142,7 +142,7 @@ namespace ThinkPower.LabB3.Domain.Service
             }
             return answerResult;
         }
-    
+
         /// <summary>
         /// 整理問卷填答項目各屬性資料
         /// </summary>
@@ -166,12 +166,12 @@ namespace ThinkPower.LabB3.Domain.Service
                 {
                     question.QuestionUid = answerDefine.Uid;
                 }
-                
+
                 var scoreQuery = (from ans in answerDefine.AnswerDefineEntities
-                                 where question.AnswerCode == ans.AnswerCode
-                                 select ans.Score).FirstOrDefault();
+                                  where question.AnswerCode == ans.AnswerCode
+                                  select ans.Score).FirstOrDefault();
                 //填入各填答的選項分數
-                
+
                 if (!scoreQuery.HasValue)
                 {
                     throw new InvalidOperationException(nameof(scoreQuery));
@@ -194,6 +194,30 @@ namespace ThinkPower.LabB3.Domain.Service
         {
 
             //TODO 依這份問卷的所有檢核規則 去 檢核所有欄位
+            foreach (var QuestDefine in questionnaireEntity.QuestDefineEntitys)
+            {
+                switch (QuestDefine.AnswerType)
+                {
+                    case "F":
+                        if (QuestDefine.NeedAnswer == "Y" && !ConditionCheck(QuestDefine.AllowNaCondition, answer.Questions))
+                        {
+
+                        }
+
+                        break;
+                    case "S":
+
+                        break;
+                    case "M":
+
+                        break;
+                }
+                //其他說明必填檢核
+                foreach (var AnswerDefine in QuestDefine.AnswerDefineEntities)
+                {
+
+                }
+            }
 
             //答題類型
             string type = "";
@@ -210,9 +234,9 @@ namespace ThinkPower.LabB3.Domain.Service
             //答題說明是否必填
             string otherRequired = "";
             //檢核訊息(題號/檢核訊息)
-            Dictionary<string,string> message = new Dictionary<string,string>();
+            Dictionary<string, string> message = new Dictionary<string, string>();
 
-            
+
             foreach (var question in answer.Questions)
             {
                 var questValidate = (from quest in questionnaireEntity.QuestDefineEntitys
@@ -220,17 +244,17 @@ namespace ThinkPower.LabB3.Domain.Service
                                      where quest.Uid == question.QuestionUid
                                      where ans.AnswerCode == question.AnswerCode
                                      select new
-                                    {
-                                        quest.AnswerType,
-                                        quest.NeedAnswer,
-                                        quest.AllowNaCondition,
-                                        quest.MinMultipleAnswers,
-                                        quest.MaxMultipleAnswers,
-                                        quest.SingleAnswerCondition,
-                                        quest.AnswerDefineEntities,
-                                        ans.HaveOtherAnswer,
-                                        ans.NeedOtherAnswer
-                                    }).FirstOrDefault();
+                                     {
+                                         quest.AnswerType,
+                                         quest.NeedAnswer,
+                                         quest.AllowNaCondition,
+                                         quest.MinMultipleAnswers,
+                                         quest.MaxMultipleAnswers,
+                                         quest.SingleAnswerCondition,
+                                         quest.AnswerDefineEntities,
+                                         ans.HaveOtherAnswer,
+                                         ans.NeedOtherAnswer
+                                     }).FirstOrDefault();
 
                 if (questValidate == null)
                 {
@@ -247,17 +271,6 @@ namespace ThinkPower.LabB3.Domain.Service
                     otherRequired = questValidate.NeedOtherAnswer;
                 }
 
-                switch (type)
-                {
-                    case "F":
-                        FieldValidate(question,required, allowNaCondition,message);
-                        break;
-                    case "S":
-                        break;
-                    case "M":
-                        break;
-                }
-                
 
                 //必填檢核
                 if (required == "Y")
@@ -270,10 +283,10 @@ namespace ThinkPower.LabB3.Domain.Service
                     //存在可不做答條件
                     else
                     {
-                        Rule conditions = JsonConvert.DeserializeObject<Rule> (allowNaCondition);
+                        Rule conditions = JsonConvert.DeserializeObject<Rule>(allowNaCondition);
                         foreach (var caondition in conditions.Conditions)
                         {
-                            
+
                         }
                     }
                 }
@@ -281,29 +294,42 @@ namespace ThinkPower.LabB3.Domain.Service
             return true;
         }
 
-        private void FieldValidate(AnswerDetailEntity question,string required, string allowNaCondition,Dictionary<string,string>message)
+        /// <summary>
+        /// 特殊條件Json解析
+        /// </summary>
+        /// <param name="conditionString">Json字串</param>
+        /// <returns>特殊條件是否成立</returns>
+        public bool ConditionCheck(string conditionString, IEnumerable<AnswerDetailEntity> questions)
         {
-            //必填檢核
-            if (required == "Y")
-            {
-                if (String.IsNullOrEmpty(allowNaCondition))
-                {
-                    if (question.OtherAnswer == "")
-                    {
-                        message.Add(question.QuestionId, "此題必須填答!");
-                    }
-                }
-                //存在可不做答條件
-                else
-                {
-                    Rule conditions = JsonConvert.DeserializeObject<Rule>(allowNaCondition);
-                    foreach (var condition in conditions.Conditions)
-                    {
+            bool check = false;
+            
+            //Json字串拆解
+            Rule conditions = JsonConvert.DeserializeObject<Rule>(conditionString);
 
+            foreach (var condition in conditions.Conditions)
+            {
+                int count = 0;
+                foreach (var question in questions)
+                {
+                    //若填答題號與特殊條件題號相等
+                    if (condition.QuestionId == question.QuestionId)
+                    {
+                        //填答選項與特殊條件選項相等
+                        if (condition.AnswerCode.Contains(question.AnswerCode))
+                        {
+                            count++;
+                            //同一題目之選項皆勾選
+                            if (count == condition.AnswerCode.Count())
+                            {
+                                check = true;
+                            }  
+                        }
                     }
                 }
             }
+            return check;
         }
+
 
         /// <summary>
         /// 指定問卷編號取得有效的問卷資料
