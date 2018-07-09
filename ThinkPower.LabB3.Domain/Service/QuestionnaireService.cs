@@ -80,31 +80,54 @@ namespace ThinkPower.LabB3.Domain.Service
             {
                 //初始化總分
                 answerResult.ActualScore = 0;
+                //暫存的總分
+                List<int> actualScore = new List<int>();
                 foreach (var questionDef in questionnaireEntity.QuestDefineEntitys)
                 {
                     var questionScore = from question in answerResult.Questions
                                         where questionDef.QuestionId == question.QuestionId
                                         select question.Score;
-                    //計分方式
-                    switch (questionnaireEntity.ScoreKind)
+                    int tmp = 0;
+                    //單題計分方式 
+                    switch (questionDef.CountScoreType)
                     {
                         //加總
                         case "1":
-                            answerResult.ActualScore += questionScore.Sum(e => e.Value);
+                            tmp += questionScore.Sum(e => e.Value);
+                            actualScore.Add(tmp);
                             break;
                         //取最高
                         case "2":
-                            answerResult.ActualScore += questionScore.Max(e => e.Value);
+                            tmp += questionScore.Max(e => e.Value);
+                            actualScore.Add(tmp);
                             break;
                         //取最低
                         case "3":
-                            answerResult.ActualScore += questionScore.Min(e => e.Value);
+                            tmp += questionScore.Min(e => e.Value);
+                            actualScore.Add(tmp);
                             break;
                         //平均
                         case "4":
-                            answerResult.ActualScore += (int)questionScore.Average(e => e.Value);
+                            tmp += (int)questionScore.Average(e => e.Value);
+                            actualScore.Add(tmp);
                             break;
                     }
+                }
+                //總問卷
+                switch (questionnaireEntity.ScoreKind)
+                {
+                    case "1":
+                        answerResult.ActualScore += actualScore.Sum(e => e); ;
+                        break;
+                    case "2":
+                        answerResult.ActualScore += actualScore.Max(e => e);
+                        break;
+                    case "3":
+                        answerResult.ActualScore += actualScore.Min(e => e);
+                        break;
+                    case "4":
+                        answerResult.ActualScore += (int)actualScore.Average(e => e);
+                        break;
                 }
                 //檢查有沒有超過問卷總分
                 if (answerResult.ActualScore.Value > answerResult.QuestScore.Value)
@@ -117,7 +140,6 @@ namespace ThinkPower.LabB3.Domain.Service
                 answerResult.ActualScore = null;
                 answerResult.ViewMessage = "您的問卷己填答完畢，謝謝您的參與!";
             }
-
             return answerResult;
         }
     
@@ -149,6 +171,7 @@ namespace ThinkPower.LabB3.Domain.Service
                                  where question.AnswerCode == ans.AnswerCode
                                  select ans.Score).FirstOrDefault();
                 //填入各填答的選項分數
+                
                 if (!scoreQuery.HasValue)
                 {
                     throw new InvalidOperationException(nameof(scoreQuery));
@@ -169,6 +192,9 @@ namespace ThinkPower.LabB3.Domain.Service
         /// <returns> 檢核是否通過 </returns> 
         private bool AnswerValidate(QuestionnaireAnswerEntity answer, QuestionnaireEntity questionnaireEntity)
         {
+
+            //TODO 依這份問卷的所有檢核規則 去 檢核所有欄位
+
             //答題類型
             string type = "";
             //是否必答
@@ -231,7 +257,7 @@ namespace ThinkPower.LabB3.Domain.Service
                     case "M":
                         break;
                 }
-
+                
 
                 //必填檢核
                 if (required == "Y")
@@ -271,7 +297,7 @@ namespace ThinkPower.LabB3.Domain.Service
                 else
                 {
                     Rule conditions = JsonConvert.DeserializeObject<Rule>(allowNaCondition);
-                    foreach (var caondition in conditions.Conditions)
+                    foreach (var condition in conditions.Conditions)
                     {
 
                     }
@@ -305,7 +331,7 @@ namespace ThinkPower.LabB3.Domain.Service
         }
 
         /// <summary>
-        /// 指定問卷識別碼取得問卷資料
+        /// 指定問卷識別碼取得問卷資料c
         /// </summary>
         /// <param name="uid">問卷識別碼</param>
         /// <returns> 問建資料物件 </returns>

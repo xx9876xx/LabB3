@@ -41,11 +41,11 @@ namespace ThinkPower.LabB3.DataAccess.DAO
         }
 
         /// <summary>
-        /// 取得指定投資風險等級識別項的投資風險標的等級明細
+        /// 取得指定投資風險等級識別項的投資風險標的等級明細集合
         /// </summary>
         /// <param name="riskRankUid">投資風險等級識別項</param>
         /// <returns> 投資風險標的等級明細DO物件 </returns>
-        public RiskRankDetailDO GetRiskRankDetail(Guid riskRankUid)
+        public IEnumerable<string> GetRiskRankDetails(Guid riskRankUid)
         {
             if (riskRankUid == null)
             {
@@ -53,7 +53,7 @@ namespace ThinkPower.LabB3.DataAccess.DAO
             }
             try
             {
-                RiskRankDetailDO riskRankDetailDO = new RiskRankDetailDO();
+                List<string> profitRiskRanks = new List<string>();
                 using (SqlConnection cn = DbConnection)
                 {
                     SqlCommand cmd = new SqlCommand
@@ -68,18 +68,12 @@ namespace ThinkPower.LabB3.DataAccess.DAO
                     {
                         while (dr.Read())
                         {
-                            riskRankDetailDO.Uid = Guid.Parse(Convert.ToString(dr["Uid"]));
-                            riskRankDetailDO.RiskRankUid = Guid.Parse(Convert.ToString(dr["RiskRankUid"]));
-                            riskRankDetailDO.ProfitRiskRank = Convert.ToString(dr["ProfitRiskRank"]);
-                            riskRankDetailDO.IsEffective = Convert.ToString(dr["IsEffective"]);
-                            riskRankDetailDO.CreateUserId = Convert.ToString(dr["CreateUserId"]);
-                            riskRankDetailDO.CreateTime = Convert.IsDBNull(dr["CreateTime"]) ? (DateTime?)null : Convert.ToDateTime(dr["CreateTime"]);
-                            riskRankDetailDO.ModifyUserId = Convert.ToString(dr["ModifyUserId"]);
-                            riskRankDetailDO.ModifyTime = Convert.IsDBNull(dr["ModifyTime"]) ? (DateTime?)null : Convert.ToDateTime(dr["ModifyTime"]);
+                            string profitRiskRank = Convert.ToString(dr["ProfitRiskRank"]);
+                            profitRiskRanks.Add(profitRiskRank);
                         }
                     }
                 }
-                return riskRankDetailDO;
+                return profitRiskRanks;
             }
             catch (Exception ex)
             {

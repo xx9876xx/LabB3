@@ -60,7 +60,7 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
             //儲存問卷主檔
             QuestionnaireAnswerDAO questionnaireAnswerDAO = new QuestionnaireAnswerDAO();
             string answerUid = questionnaireAnswerDAO.Insert(questionnaireAnswerDO);
-
+            //TODO 先把整理資料的方法做掉，最後再把儲存行為一起處理，相間隔的時間會比較短比較不會出錯
             List<QuestionnaireAnswerDetailDO> answerDetails = new List<QuestionnaireAnswerDetailDO>();
             foreach (var answerDetail in Questions)
             {

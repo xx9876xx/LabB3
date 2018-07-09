@@ -15,48 +15,71 @@ namespace ThinkPower.LabB3.Domain.Entity.Risk
     public class RiskRankEntity : BaseEntity
     {
         /// <summary>
-        /// 取得全部投資風險等級Entity的建構式
+        /// 指定投資屬性類型將投資風險等級DO載入Entity
         /// </summary>
-        public RiskRankEntity()
+        /// <param name="riskRankKind">投資屬性類型(H:高,M:中,L:低)</param>
+        public RiskRankEntity(string riskRankKind)
         {
-
+            if (riskRankKind == null)
+            {
+                throw new ArgumentNullException(nameof(riskRankKind));
+            }
             RiskRankDAO riskRankDAO = new RiskRankDAO();
-            IEnumerable<RiskRankDO> riskRankDOs = riskRankDAO.GetAll();
+            RiskRankDO riskRankDO = riskRankDAO.GetRiskRank(riskRankKind);
+            Uid = riskRankDO.Uid;
+            RiskEvaId = riskRankDO.RiskEvaId;
+            MinScore = riskRankDO.MinScore;
+            MaxScore = riskRankDO.MaxScore;
+            RiskRankKind = riskRankDO.RiskRankKind;
 
-            //foreach (RiskRankDO riskRankDO in riskRankDOs)
-            //{
-            //    riskRankDO
-            //}
+            RiskRankDetailDAO riskRankDetailDAO = new RiskRankDetailDAO();
+            RiskRankDetails = riskRankDetailDAO.GetRiskRankDetails(Uid);
+        }
 
-            //    //載入問卷Uid取得題目集合DOs
-            //    RiskRankDetailDAO riskRankDetailDAO = new RiskRankDetailDAO();
-            //IEnumerable<RiskRankDetailDO> riskRankDetailDOs = new 
-            //    riskRankDetailDAO.GetRiskRankDetail(Uid);
 
-            //List<QuestDefineEntity> questDefineEntitys = new List<QuestDefineEntity>();
-            //foreach (RiskRankDO riskRankDO in riskRankDOs)
-            //{
-            //    QuestDefineEntity questDefineEntity = new QuestDefineEntity(questionDefineDO);
-            //    questDefineEntitys.Add(questDefineEntity);
-            //}
-            //QuestDefineEntitys = questDefineEntitys;
+        /// <summary>
+        /// 將投資風險等級DO資料載入Entity物件
+        /// </summary>
+        /// <param name="riskRankDO"> 投資風險等級DO </param>
+        public RiskRankEntity(RiskRankDO riskRankDO)
+        {
+            if (riskRankDO == null)
+            {
+                throw new ArgumentNullException(nameof(riskRankDO));
+            }
+            Uid = riskRankDO.Uid;
+            RiskEvaId = riskRankDO.RiskEvaId;
+            MinScore = riskRankDO.MinScore;
+            MaxScore = riskRankDO.MaxScore;
+            RiskRankKind = riskRankDO.RiskRankKind;
 
+            RiskRankDetailDAO riskRankDetailDAO = new RiskRankDetailDAO();
+            RiskRankDetails = riskRankDetailDAO.GetRiskRankDetails(Uid);
         }
         /// <summary>
         /// 風險評估項目代號
         /// </summary>
         public string RiskEvaId { get; set; }
+
         /// <summary>
         /// 起始分數
         /// </summary>
-        public int MinScore { get; set; }
+        public int? MinScore { get; set; }
+
         /// <summary>
         /// 截止分數
         /// </summary>
-        public int MaxScore { get; set; }
+        public int? MaxScore { get; set; }
+
         /// <summary>
         /// 投資屬性類型
         /// </summary>
         public string RiskRankKind { get; set; }
+
+        //TODO 改成用string 不需要自創一個Entity
+        /// <summary>
+        /// 投資風險標的等級明細集合
+        /// </summary>
+        public IEnumerable<string> RiskRankDetails { get; set; }
     }
 }

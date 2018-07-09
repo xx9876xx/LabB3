@@ -16,6 +16,7 @@ namespace ThinkPower.LabB3.Domain.Service.Json
         /// </summary>
         public string QuestionId { get; set; }
 
+        //TODO 盡量不要用陣列因為要給初始直會不夠彈性 可以用IEnumrable
         /// <summary>
         /// 條件選項
         /// </summary>

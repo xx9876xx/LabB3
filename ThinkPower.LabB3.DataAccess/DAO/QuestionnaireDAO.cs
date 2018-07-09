@@ -32,7 +32,7 @@ namespace ThinkPower.LabB3.DataAccess.DAO
                     SqlCommand cmd = new SqlCommand
                         ("SELECT COUNT(Uid) FROM Questionnaire", cn);
                     cn.Open();
-                    count = (int)cmd.ExecuteScalar();                    
+                    count = (int)cmd.ExecuteScalar();
                 }
                 return count;
             }

@@ -51,12 +51,14 @@ namespace ThinkPower.LabB3.DataAccess.DAO
         //TODO 載入清單一次連線批次存檔  一筆失敗要全部還原 要設交易(Transation最後做)
         //TODO 檢核方法為資料本身是否null,長度多少,是否為Guid,是否非數字之類的
         //TODO 時間建立要統一放在邏輯層或資料存取層 因為這兩隻程式未必會是放在同一台主機運行
+        //TODO 檢核的部分要加
         public void Insert(IEnumerable<QuestionnaireAnswerDetailDO> answerDetails)
         {
             try
             {
                 using (SqlConnection cn = DbConnection)
-                {                    
+                {
+                    cn.Open();
                     foreach (var answerDetail in answerDetails)
                     {
                         SqlCommand cmd = new SqlCommand
@@ -89,10 +91,8 @@ namespace ThinkPower.LabB3.DataAccess.DAO
 
                         cmd.Parameters.Add("@CreateTime", SqlDbType.DateTime);
                         cmd.Parameters["@CreateTime"].Value = answerDetail.CreateTime ?? (object)DBNull.Value;
-
-                        cn.Open();
+                        
                         cmd.ExecuteNonQuery();
-                        cn.Close();
                     }
                 }
             }

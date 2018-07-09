@@ -9,6 +9,8 @@ using ThinkPower.LabB3.Domain.DTO;
 using ThinkPower.LabB3.Domain.Entity.Question;
 using NLog;
 using ThinkPower.LabB3.Domain.Entity.Risk;
+using ThinkPower.LabB3.DataAccess.DAO;
+using ThinkPower.LabB3.DataAccess.DO;
 
 namespace ThinkPower.LabB3.Domain.Service
 {
@@ -71,6 +73,7 @@ namespace ThinkPower.LabB3.Domain.Service
         /// <returns></returns>
         public IEnumerable<string> RiskRank(string riskRankKind)
         {
+            
             return null;
         }
         /// <summary>

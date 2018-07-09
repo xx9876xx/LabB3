@@ -41,6 +41,60 @@ namespace ThinkPower.LabB3.DataAccess.DAO
         }
 
         /// <summary>
+        /// 指定投資屬性類型取得投資風險等級資料
+        /// </summary>
+        /// <param name="riskRankKind"> 投資屬性類型(H:高,M:中,L:低) </param>
+        /// <returns>資風險等級DO資料</returns>
+        public RiskRankDO GetRiskRank(string riskRankKind)
+        {
+            if (riskRankKind == null)
+            {
+                throw new ArgumentNullException(nameof(riskRankKind));
+            }
+
+            try
+            {
+                RiskRankDO riskRankDO = new RiskRankDO();
+                using (SqlConnection cn = DbConnection)
+                {
+                    SqlCommand cmd = new SqlCommand
+                        ("SELECT [Uid],[RiskEvaId],[MinScore],[MaxScore],[RiskRankKind]" +
+                        "[CreateUserId],[CreateTime],[ModifyUserId],[ModifyTime]" +
+                        "FROM RiskRank " +
+                        "WHERE RiskRankKind = @RiskRankKind", cn);
+                    cmd.Parameters.Add("@RiskRankKind", SqlDbType.VarChar);
+                    cmd.Parameters["@RiskRankKind"].Value = riskRankKind;
+
+                    cn.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            riskRankDO.Uid = Guid.Parse(Convert.ToString(dr["Uid"]));
+                            riskRankDO.RiskEvaId = Convert.ToString(dr["RiskEvaId"]);
+                            riskRankDO.MinScore = Convert.IsDBNull(dr["MinScore"]) ? (int?)null : Convert.ToInt32(dr["MinScore"]);
+                            riskRankDO.MaxScore = Convert.IsDBNull(dr["MaxScore"]) ? (int?)null : Convert.ToInt32(dr["MaxScore"]);
+                            riskRankDO.RiskRankKind = Convert.ToString(dr["RiskRankKind"]);
+                            riskRankDO.CreateUserId = Convert.ToString(dr["CreateUserId"]);
+                            riskRankDO.CreateTime = Convert.IsDBNull(dr["CreateTime"]) ? (DateTime?)null : Convert.ToDateTime(dr["CreateTime"]);
+                            riskRankDO.ModifyUserId = Convert.ToString(dr["ModifyUserId"]);
+                            riskRankDO.ModifyTime = Convert.IsDBNull(dr["ModifyTime"]) ? (DateTime?)null : Convert.ToDateTime(dr["ModifyTime"]);
+                        }
+                    }
+                }
+                return riskRankDO;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ExceptionDispatchInfo.Capture(ex).Throw();
+                return null;
+            }
+
+        }
+
+
+        /// <summary>
         /// 取得指定問卷識別項的問卷資料
         /// </summary>
         /// <param name="uid">問卷識別項</param>

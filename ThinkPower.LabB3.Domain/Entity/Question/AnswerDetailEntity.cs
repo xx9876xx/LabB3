@@ -16,26 +16,26 @@ namespace ThinkPower.LabB3.Domain.Entity.Question
         /// <summary>
         /// 儲存問卷填答主檔資料
         /// </summary>
-        public QuestionnaireAnswerDetailDO SaveQuestionnaireAnswer(Guid AnswerUid, string CreateUserId)
+        public QuestionnaireAnswerDetailDO SaveQuestionnaireAnswer(Guid answerUid, string createUserId)
         {
-            if (AnswerUid == null)
+            if (answerUid == null)
             {
-                throw new ArgumentException(nameof(AnswerUid));
+                throw new ArgumentException(nameof(answerUid));
             }
 
-            if (CreateUserId == null)
+            if (createUserId == null)
             {
-                throw new ArgumentException(nameof(CreateUserId));
+                throw new ArgumentException(nameof(createUserId));
             }
 
             QuestionnaireAnswerDetailDO questionnaireAnswerDetailDO = new QuestionnaireAnswerDetailDO
             {
-                AnswerUid = AnswerUid,
+                AnswerUid = answerUid,
                 QuestionUid = QuestionUid,
                 AnswerCode = AnswerCode,
                 OtherAnswer = OtherAnswer,
                 Score = Score,
-                CreateUserId = CreateUserId,
+                CreateUserId = createUserId,
                 CreateTime = DateTime.Now
             };
 

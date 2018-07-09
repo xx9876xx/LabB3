@@ -53,13 +53,13 @@ namespace ThinkPower.LabB3.Web.Controllers
             {
                 RiskEvaAnswerEntity riskAnswerEntity = new RiskEvaAnswerEntity();
                 List<AnswerDetailEntity> questions = new List<AnswerDetailEntity>();
-                foreach (string name in answers)
+                foreach (string fieldName in answers)
                 {
-                    //題目name => "Question-Q001" or "Question-Q1"
-                    if (name.StartsWith("Question") && !name.EndsWith("-other"))
+                    //題目fieldName => "Question-Q001" or "Question-Q1"
+                    if (fieldName.StartsWith("Question-") && !fieldName.EndsWith("-other"))
                     {
-                        string questId = name.Split('-')[1];
-                        string[] ansCode = answers[name].Split(',');
+                        string questId = fieldName.Split('-')[1];
+                        string[] ansCode = answers[fieldName].Split(',');
                         //找到有相同題號與選項的填答物件
                         foreach (var ans in ansCode)
                         {
@@ -75,19 +75,15 @@ namespace ThinkPower.LabB3.Web.Controllers
                                 questionNew.OtherAnswer = "";
                                 questions.Add(questionNew);
                             }
-                            //若物件存在不須動作
-                            else
-                            {
-                            }
                         }
                         
                     }
-                    //填充題name => "Question-Q1-E-other"
-                    else if(name.StartsWith("Question") && name.EndsWith("-other"))
+                    //填充題fieldName => "Question-Q1-E-other"
+                    else if (fieldName.StartsWith("Question-") && fieldName.EndsWith("-other"))
                     {
-                        string questId = name.Split('-')[1];
-                        string ansCode = name.Split('-')[2];
-                        string otherAnswer = answers[name];
+                        string questId = fieldName.Split('-')[1];
+                        string ansCode = fieldName.Split('-')[2];
+                        string otherAnswer = answers[fieldName];
                         //找到有相同題號與選項的填答物件
                         var question = (from quest in questions
                                         where (quest.QuestionId == questId) && (quest.AnswerCode == ansCode)
